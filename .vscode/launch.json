@@ -1,0 +1,30 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug",
+      "type": "node",
+      "request": "launch",
+      "protocol": "inspector",
+      "cwd": "${workspaceRoot}",
+      "args": ["src/index.ts"],
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/ts-node-dev",
+      "runtimeArgs": ["--nolazy"],
+      "restart": true
+    },
+    {
+      "type": "node",
+      "name": "Test",
+      "request": "launch",
+      "args": ["--runInBand"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

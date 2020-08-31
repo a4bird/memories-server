@@ -1,0 +1,30 @@
+{
+  "debug.javascript.usePreview": false,
+  "editor.tabSize": 2,
+  "files.eol": "\n",
+  "javascript.preferences.quoteStyle": "single",
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#f59e38",
+    "activityBar.activeBorder": "#ffffff",
+    "activityBarBadge.background": "#db6a00",
+    "activityBar.foreground": "#000000"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.format.enable": false,
+  "eslint.validate": [
+    "javascript",
+    "typescript"
+  ]
+}
