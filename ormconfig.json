@@ -8,5 +8,5 @@
   "database": "memories-local",
   "synchronize": true,
   "logging": true,
-  "entities": ["src/entity/*.*"]
+  "entities": ["src/entities/*.*"]
 }

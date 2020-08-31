@@ -7,7 +7,7 @@ import {
   BeforeInsert,
 } from 'typeorm';
 
-@Entity('user_accounts')
+@Entity()
 export class UserAccount extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
