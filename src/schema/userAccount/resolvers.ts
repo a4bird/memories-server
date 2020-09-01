@@ -1,5 +1,8 @@
 import * as bcrypt from 'bcryptjs';
 import * as yup from 'yup';
+import jwt from 'jsonwebtoken';
+
+import { secret, expiration } from '../../env';
 import { UserAccount } from '../../entities/UserAccount';
 import { MutationLoginArgs, MutationRegisterArgs } from '../../types/graphql';
 import {
@@ -32,7 +35,7 @@ const resolvers = {
     login: async (
       _: any,
       { email, password }: MutationLoginArgs,
-      { session, req }: any
+      { res }: any
     ) => {
       const user = await UserAccount.findOne({
         where: { email },
@@ -42,39 +45,40 @@ const resolvers = {
         return errorResponse;
       }
 
-      if (!user.confirmed) {
-        return [
-          {
-            path: 'email',
-            message: confirmEmailError,
-          },
-        ];
-      }
+      // TODO: Later
+      // if (!user.confirmed) {
+      //   return [
+      //     {
+      //       path: 'email',
+      //       message: confirmEmailError,
+      //     },
+      //   ];
+      // }
 
-      if (user.forgotPasswordLocked) {
-        return [
-          {
-            path: 'email',
-            message: forgotPasswordLockedError,
-          },
-        ];
-      }
+      // if (user.forgotPasswordLocked) {
+      //   return [
+      //     {
+      //       path: 'email',
+      //       message: forgotPasswordLockedError,
+      //     },
+      //   ];
+      // }
 
-      const valid = await bcrypt.compare(password, user.password);
+      const passwordsMatch = bcrypt.compareSync(password, user.password);
 
-      if (!valid) {
+      if (!passwordsMatch) {
         return errorResponse;
       }
 
-      // login successful
-      session.userId = user.id;
+      const authToken = jwt.sign(email, secret);
+      res.cookie('authToken', authToken, { maxAge: expiration });
 
       // TODO: Alternate to redis
       // if (req.sessionID) {
       //   await redis.lpush(`${userSessionIdPrefix}${user.id}`, req.sessionID);
       // }
 
-      return null;
+      return user;
     },
     register: async (_: any, args: MutationRegisterArgs) => {
       try {
@@ -98,10 +102,9 @@ const resolvers = {
         ];
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
       const user = UserAccount.create({
         email,
-        password: hashedPassword,
+        password: password,
       });
 
       await user.save();
@@ -114,7 +117,7 @@ const resolvers = {
       //   );
       //   await sendEmail(email, confirmationLink);
       // }
-      return null;
+      return user;
     },
   },
 };

@@ -15,7 +15,7 @@ export class UserAccount extends BaseEntity {
   @Column('varchar', { length: 255 })
   email: string;
 
-  @Column('text')
+  @Column('varchar', { length: 100 })
   password: string;
 
   @Column('bool', { default: false })
@@ -26,6 +26,6 @@ export class UserAccount extends BaseEntity {
 
   @BeforeInsert()
   async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
+    this.password = await bcrypt.hash(this.password, bcrypt.genSaltSync(8));
   }
 }

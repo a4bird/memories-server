@@ -13,8 +13,8 @@ export type Scalars = {
 
 export type Error = {
   __typename?: 'Error';
-  message: Scalars['String'];
   path: Scalars['String'];
+  message: Scalars['String'];
 };
 
 export type Query = {
@@ -30,8 +30,8 @@ export type UserAccount = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  login?: Maybe<Array<Error>>;
-  register?: Maybe<Array<Error>>;
+  login?: Maybe<UserAccount>;
+  register?: Maybe<UserAccount>;
 };
 
 
@@ -145,8 +145,8 @@ export type ResolversParentTypes = {
 };
 
 export type ErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Error'] = ResolversParentTypes['Error']> = {
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   path?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -161,8 +161,8 @@ export type UserAccountResolvers<ContextType = any, ParentType extends Resolvers
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  login?: Resolver<Maybe<Array<ResolversTypes['Error']>>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
-  register?: Resolver<Maybe<Array<ResolversTypes['Error']>>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
+  login?: Resolver<Maybe<ResolversTypes['UserAccount']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  register?: Resolver<Maybe<ResolversTypes['UserAccount']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
 };
 
 export type Resolvers<ContextType = any> = {

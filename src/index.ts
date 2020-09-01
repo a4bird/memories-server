@@ -1,22 +1,34 @@
 import 'dotenv-safe/config';
+import { ApolloServer } from 'apollo-server-express';
+import jwt from 'jsonwebtoken';
 
-import { ApolloServer, gql } from 'apollo-server-express';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import express from 'express';
-
-import { origin, port } from './env';
+import { app } from './app';
+import { secret, origin } from './env';
 import schema from './schema';
 import { createTypeormConn } from './utils/createTypeormConn';
+import { UserAccount } from './entities/UserAccount';
 
 export const startServer = async () => {
-  const app = express();
+  const server = new ApolloServer({
+    schema,
+    context: async (session: any) => {
+      const req = session.req;
+      let currentUser;
+      if (req.cookies.authToken) {
+        const email = jwt.verify(req.cookies.authToken, secret) as string;
+        if (email) {
+          currentUser = await UserAccount.findOne({
+            where: { email },
+          });
+        }
+      }
 
-  app.use(cors({ credentials: true, origin }));
-  app.use(express.json());
-  app.use(cookieParser());
-
-  const server = new ApolloServer({ schema });
+      return {
+        currentUser,
+        res: session.res,
+      };
+    },
+  });
   server.applyMiddleware({
     app,
     path: '/graphql',

@@ -6,6 +6,6 @@ type UserAccount {
 }
 
 type Mutation {
-  login(email: String!, password: String!): [Error!]
-  register(email: String!, password: String!): [Error!]
+  login(email: String!, password: String!): UserAccount
+  register(email: String!, password: String!): UserAccount
 }
