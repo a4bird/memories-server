@@ -42,7 +42,9 @@ const resolvers = {
       });
 
       if (!user) {
-        return errorResponse;
+        return {
+          errors: errorResponse,
+        };
       }
 
       // TODO: Later
@@ -67,7 +69,9 @@ const resolvers = {
       const passwordsMatch = bcrypt.compareSync(password, user.password);
 
       if (!passwordsMatch) {
-        return errorResponse;
+        return {
+          errors: errorResponse,
+        };
       }
 
       const authToken = jwt.sign(email, secret);
@@ -78,7 +82,9 @@ const resolvers = {
       //   await redis.lpush(`${userSessionIdPrefix}${user.id}`, req.sessionID);
       // }
 
-      return user;
+      return {
+        userAccount: user,
+      };
     },
     register: async (_: any, args: MutationRegisterArgs) => {
       try {
@@ -94,12 +100,14 @@ const resolvers = {
       });
 
       if (userAlreadyExists) {
-        return [
-          {
-            path: 'email',
-            message: duplicateEmail,
-          },
-        ];
+        return {
+          errors: [
+            {
+              path: 'email',
+              message: duplicateEmail,
+            },
+          ],
+        };
       }
 
       const user = UserAccount.create({
@@ -117,7 +125,9 @@ const resolvers = {
       //   );
       //   await sendEmail(email, confirmationLink);
       // }
-      return user;
+      return {
+        userAccount: user,
+      };
     },
   },
 };

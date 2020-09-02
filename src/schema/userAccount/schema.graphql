@@ -5,7 +5,12 @@ type UserAccount {
   email: String!
 }
 
+type UserAccountOutput {
+  userAccount: UserAccount
+  errors: [Error!]
+}
+
 type Mutation {
-  login(email: String!, password: String!): UserAccount
-  register(email: String!, password: String!): UserAccount
+  login(email: String!, password: String!): UserAccountOutput
+  register(email: String!, password: String!): UserAccountOutput
 }

@@ -1,4 +1,3 @@
-import { importSchema } from 'graphql-import';
 import { makeExecutableSchema, IResolvers, mergeTypeDefs } from 'graphql-tools';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import resolvers from './resolvers';
