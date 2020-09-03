@@ -1,4 +1,5 @@
 # import Error from "../shared.graphql"
+# import Void from "../shared.graphql"
 
 type UserAccount {
   id: ID!
@@ -13,4 +14,9 @@ type UserAccountOutput {
 type Mutation {
   login(email: String!, password: String!): UserAccountOutput
   register(email: String!, password: String!): UserAccountOutput
+  logout: Void
+}
+
+type Query {
+  me: UserAccount
 }

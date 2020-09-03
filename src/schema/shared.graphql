@@ -1,3 +1,5 @@
+scalar Void
+
 type Error {
   path: String!
   message: String!

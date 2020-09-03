@@ -11,8 +11,7 @@ import { UserAccount } from './entities/UserAccount';
 export const startServer = async () => {
   const server = new ApolloServer({
     schema,
-    context: async (session: any) => {
-      const req = session.req;
+    context: async ({ req, res }: any) => {
       let currentUser;
       if (req.cookies.authToken) {
         const email = jwt.verify(req.cookies.authToken, secret) as string;
@@ -24,8 +23,9 @@ export const startServer = async () => {
       }
 
       return {
+        req,
+        res,
         currentUser,
-        res: session.res,
       };
     },
   });

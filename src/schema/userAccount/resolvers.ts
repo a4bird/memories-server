@@ -17,6 +17,7 @@ import {
   registerPasswordValidation,
 } from './errorMessages/register';
 import { formatYupError } from '../../utils/formatYupError';
+import { MyContext } from '../../types/context';
 
 const errorResponse = [
   {
@@ -128,6 +129,16 @@ const resolvers = {
       return {
         userAccount: user,
       };
+    },
+    logout: async (_: any, __: any, { res, currentUser }: MyContext) => {
+      if (currentUser) {
+        res.clearCookie('authToken');
+      }
+    },
+  },
+  Query: {
+    me: async (_: any, __: any, { currentUser }: MyContext) => {
+      return currentUser || null;
     },
   },
 };

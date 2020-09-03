@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -9,7 +9,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Void: any;
 };
+
 
 export type Error = {
   __typename?: 'Error';
@@ -20,6 +22,7 @@ export type Error = {
 export type Query = {
   __typename?: 'Query';
   _dummy?: Maybe<Scalars['Boolean']>;
+  me?: Maybe<UserAccount>;
 };
 
 export type UserAccount = {
@@ -38,6 +41,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   login?: Maybe<UserAccountOutput>;
   register?: Maybe<UserAccountOutput>;
+  logout?: Maybe<Scalars['Void']>;
 };
 
 
@@ -130,6 +134,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Void: ResolverTypeWrapper<Scalars['Void']>;
   Error: ResolverTypeWrapper<Error>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Query: ResolverTypeWrapper<{}>;
@@ -142,6 +147,7 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Void: Scalars['Void'];
   Error: Error;
   String: Scalars['String'];
   Query: {};
@@ -152,6 +158,10 @@ export type ResolversParentTypes = {
   Mutation: {};
 };
 
+export interface VoidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Void'], any> {
+  name: 'Void';
+}
+
 export type ErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Error'] = ResolversParentTypes['Error']> = {
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   path?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -160,6 +170,7 @@ export type ErrorResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _dummy?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  me?: Resolver<Maybe<ResolversTypes['UserAccount']>, ParentType, ContextType>;
 };
 
 export type UserAccountResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserAccount'] = ResolversParentTypes['UserAccount']> = {
@@ -177,9 +188,11 @@ export type UserAccountOutputResolvers<ContextType = any, ParentType extends Res
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   login?: Resolver<Maybe<ResolversTypes['UserAccountOutput']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   register?: Resolver<Maybe<ResolversTypes['UserAccountOutput']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
+  logout?: Resolver<Maybe<ResolversTypes['Void']>, ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
+  Void?: GraphQLScalarType;
   Error?: ErrorResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   UserAccount?: UserAccountResolvers<ContextType>;
