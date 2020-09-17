@@ -24,3 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 
 /types/graphql.d.ts
+.aws/cdk/memories-shared/env.example
