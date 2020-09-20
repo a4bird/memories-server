@@ -24,7 +24,7 @@ export class KmsKey extends Construct {
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
-    this.key.addAlias(`alias/partner-margins/pm-${envSuffix}${resourceSuffix}`);
+    this.key.addAlias(`alias/memories/memories-${envSuffix}-${resourceSuffix}`);
 
     this.key.addToResourcePolicy(
       new iam.PolicyStatement({

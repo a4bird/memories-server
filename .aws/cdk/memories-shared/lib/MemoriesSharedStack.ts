@@ -18,19 +18,15 @@ export class MemoriesSharedStack extends cdk.Stack {
 
     const kmsKey = new KmsKey(this, 'KmsKey');
 
-    if (
-      environment === 'Development' ||
-      environment === 'Staging' ||
-      environment === 'Sandbox'
-    ) {
+    if (environment === 'Development' || environment === 'Staging') {
       console.log('Deploying non prod api keys');
 
-      this.rdsDbConnectionInfoKeyName = `/a4bird/memories-graphql-server/rds-connection${envSuffix}${resourceSuffix}`;
+      this.rdsDbConnectionInfoKeyName = `/a4bird/memories-graphql-server/rds-connection-${envSuffix}-${resourceSuffix}`;
       new secretsmanager.Secret(
         this,
-        `MemoriesRdsConnection${envSuffix}${resourceSuffix}`,
+        `MemoriesRdsConnection-${envSuffix}-${resourceSuffix}`,
         {
-          description: `Memories API RDS Connection Details${envSuffix}${resourceSuffix}`,
+          description: `Memories API RDS Connection Details ${envSuffix}-${resourceSuffix}`,
           secretName: this.rdsDbConnectionInfoKeyName,
           encryptionKey: kmsKey.key,
           generateSecretString: {
@@ -64,9 +60,9 @@ export class MemoriesSharedStack extends cdk.Stack {
     }
 
     new cdk.CfnOutput(this, `memories-graphql-server-rds-connection-key-name`, {
-      description: `Export Rds connection key name for memories-graphql-server${envSuffix}${resourceSuffix}`,
+      description: `Export Rds connection key name for memories-graphql-server-${envSuffix}-${resourceSuffix}`,
       value: this.rdsDbConnectionInfoKeyName,
-      exportName: `partner-margins-shared${envSuffix}${resourceSuffix}::rdsDbConnectionInfoKeyName`,
+      exportName: `a4bird-memories-shared-${envSuffix}-${resourceSuffix}::rdsDbConnectionInfoKeyName`,
     });
   }
 }
