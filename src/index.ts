@@ -39,7 +39,11 @@ export const startServer = async () => {
   const port = process.env.PORT || 4000;
 
   app.listen(port, () => {
-    console.log(`🚀 Server is listening on http://localhost:${port}/graphql`);
+    const url = `http://localhost:${port}`;
+    console.log(`🚀 Server is listening on ${url}/graphql`);
+    console.log(
+      `Try your health check at: ${url}/.well-known/apollo/server-health`
+    );
   });
 };
 

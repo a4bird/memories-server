@@ -34,7 +34,7 @@ export default {
     return `${project}-${envSuffix}-${resourceSuffix}`;
   },
   getVpc: (stackRef: Stack) => {
-    return Vpc.fromVpcAttributes(stackRef, 'OfxVpc', {
+    return Vpc.fromVpcAttributes(stackRef, 'Memories-Vpc', {
       vpcId: 'vpc-014e7d9e3e85be285',
       availabilityZones: ['ap-southeast-2a, ap-southeast-2b'],
       privateSubnetIds: [
