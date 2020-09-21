@@ -1,0 +1,28 @@
+-- Issue 1
+https://github.com/typeorm/typeorm/issues/2093
+
+# Option 1
+
+@fan123199 everything should still work if you use the mysql_native_password plugin.
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'YourRootPassword';
+-- or
+CREATE USER 'foo'@'%' IDENTIFIED WITH mysql_native_password BY 'bar';
+
+mysql> FLUSH PRIVILEGES;
+
+
+# Option 2
+
+docker exec -it YOUR_CONTAINER mysql -u root -p
+Enter password:
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '{your password}';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '{your password}';
+SELECT plugin FROM mysql.user WHERE User = 'root';
+
+
+--- Issue 2 - ssh tunnel
+
+ssh -i "memories.pem" ec2-user@<jumphost-ip>.ap-southeast-2.compute.amazonaws.com
+
+ssh -N -L 1301:memories-db-cluster-dev-test.cluster-cnkuy7a5aahm.ap-southeast-2.rds.amazonaws.com:3306 ec2-user@<jumphost-ip> -i "memories.pem"
