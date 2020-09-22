@@ -28,11 +28,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '${{ env.NODE_VERSION }}'
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache node modules
-        uses: actions/cache@v1
+        uses: actions/cache@v2
+        id: yarn-cache
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-node-modules-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
         run: npm ci
       # TODO
