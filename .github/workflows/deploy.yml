@@ -78,7 +78,7 @@ jobs:
 
       - name: Fetch docker build tag
         run: |
-          echo "::info ::Deployment payload: ${{ github.event.deployment }}"
+          echo "::info ::Deployment payload: ${{ toJSON(github.event.deployment) }}"
 
       # - name: Checkout
       #   uses: actions/checkout@v2
