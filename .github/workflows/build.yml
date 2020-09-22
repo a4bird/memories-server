@@ -1,0 +1,103 @@
+name: Dev Deployment
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  PROJECT: a4bird-memories
+  NODE_VERSION: 12.16.1
+  AWS_PRIMARY_REGION: ap-southeast-2
+  AWS_ECR_REPO_NAME: memories-server
+  DOCKER_ARCHIVE: memories-server-${{ github.sha }}.tar
+  AWS_ROLE_TO_ASSUME: arn:aws:iam::${{ secrets.AWS_ACCOUNT_NUMBER }}:role/admin
+
+jobs:
+  test:
+    name: Linting and Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '${{ env.NODE_VERSION }}'
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-node-modules-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install Dependencies
+        run: npm ci
+      # TODO
+      # - name: Run ESLint
+      #   run: npm run lint
+      # - name: Run Jest
+      #   run: npm test
+
+  setup:
+    name: Setup Variables
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.branch-slug.outputs.branch }}
+      slug: ${{ steps.branch-slug.outputs.slug }}
+      docker-tag: ${{ github.sha }}
+    steps:
+      - name: Create Slug
+        id: branch-slug
+        run: |
+          branch_ref=${GITHUB_REF#refs/heads/}
+          branch="${GITHUB_HEAD_REF:-$branch_ref}"
+          slug="${branch//\//-}"
+          echo ::set-output name=branch::${branch}
+          echo ::set-output name=slug::${slug,,}
+
+  build:
+    name: Build Docker Image
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_PRIMARY_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          role-duration-seconds: 1200
+      - name: Login Docker to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build and Push Docker Image
+        env:
+          DOCKER_IMAGE_TAG: ${{ steps.login-ecr.outputs.registry }}/${{ env.AWS_ECR_REPO_NAME }}:${{ needs.setup.outputs.docker-tag }}
+        run: |
+          docker build -t ${{ env.DOCKER_IMAGE_TAG }} .
+          docker push ${{ env.DOCKER_IMAGE_TAG }}
+      - name: Create github deployment
+        id: create_deployment
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/deployments
+          repository: ${{ github.repository }}
+          mediaType: |
+            previews: 
+              - ant-man
+          ref: ${{ github.ref }}
+          environment: 'Development'
+          auto_merge: false
+          required_contexts: '[]'
+          production_environment: false
+          bucket_name: ${{ env.PROJECT }}
+          version: ${{ format('1.0.0.{0}', github.run_number) }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_ORG_PAT }} # using a PAT here as the GITHUB_TOKEN doesn't propagate events (https://docs.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token#using-the-github_token-in-a-workflow)
+

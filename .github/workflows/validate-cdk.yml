@@ -1,0 +1,46 @@
+name: CDK Validation
+
+on:
+  push:
+    paths:
+      - '.aws/cdk/**'
+env:
+  NODE_VERSION: 12.16.1
+  AWS_PRIMARY_REGION: ap-southeast-2
+  AWS_ECR_REPO_NAME: memories-server
+
+jobs:
+  validate:
+    name: CDK Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '${{ env.NODE_VERSION }}'
+      - name: Install Dependencies
+        run: npm run cdk-install
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        id: login-aws
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_PRIMARY_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          role-duration-seconds: 1200
+      - name: Run CDK Synth
+        env:
+          AWS_TAG_REPOSITORY: ${{ github.repository }}
+          AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
+          AWS_CDK_DEPLOY_REGION: ${{ env.AWS_PRIMARY_REGION }}
+          AWS_CDK_STACK_ID: graphql
+          AWS_CERTIFICATE_ARN: arn:aws:acm:ap-southeast-2:${{ steps.login-aws.outputs.aws-account-id }}:certificate/${{ secrets.DEV_AWS_CERTIFICATE_ID }}
+          AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.AWS_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
+          AWS_FARGATE_DESIRED_COUNT: 1
+          AWS_ROUTE53_DOMAIN: a4brd.tk
+          AWS_ROUTE53_SUBDOMAIN: memories
+          DOCKER_IMAGE_TAG: ${{ github.sha }}
+        run: npm run cdk-synth

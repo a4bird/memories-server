@@ -7,9 +7,8 @@ set -euxo pipefail
 : ${REGION?"REGION env variable is required"}
 : ${GIT_SHA?"GIT_SHA env variable is required"}
 : ${SLUG?"VERSION env variable is required"}
-: ${PROJECT?"PROJECT env variable is required"}
 
-
+PROJECT="a4bird-memories-shared"
 stack_name="${PROJECT}-${ENV_SUFFIX}-${SLUG}"
 stack_id=$(aws cloudformation describe-stacks --stack-name $stack_name --query "Stacks[0].StackId" --output text) || stack_id=""
 
