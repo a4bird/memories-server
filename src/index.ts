@@ -6,7 +6,7 @@ import { app } from './app';
 import { secret, origin } from './env';
 import schema from './schema';
 import { createTypeormConn } from './utils/createTypeormConn';
-import { UserAccount } from './entities/UserAccount';
+import { UserAccount } from './entities/userAccount';
 
 export const startServer = async () => {
   const server = new ApolloServer({

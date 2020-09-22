@@ -1,13 +1,13 @@
 
 
-FROM node:12.16-alpine as build
+FROM node:14.9.0-alpine as build
 WORKDIR /src
 COPY . /src
 
 RUN npm install
 RUN npm run build
 
-FROM node:12.16-alpine as runtime
+FROM node:14.9.0 as runtime
 WORKDIR /app
 ENV NODE_ENV=production
 COPY package.json ./

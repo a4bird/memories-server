@@ -11,7 +11,7 @@ on:
 
 env:
   PROJECT: a4bird-memories
-  NODE_VERSION: 12.16.1
+  NODE_VERSION: 14.9.0
   AWS_PRIMARY_REGION: ap-southeast-2
   AWS_ECR_REPO_NAME: memories-server
   DOCKER_ARCHIVE: memories-server-${{ github.sha }}.tar
@@ -27,16 +27,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '${{ env.NODE_VERSION }}'
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+          node-version: "${{ env.NODE_VERSION }}"
+
       - name: Cache node modules
         uses: actions/cache@v2
         id: yarn-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-build-node-modules-${{ env.NODE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
       - name: Install Dependencies
         run: npm ci
       # TODO
@@ -96,9 +94,9 @@ jobs:
             previews: 
               - ant-man
           ref: ${{ github.ref }}
-          environment: 'Development'
+          environment: "Development"
           auto_merge: false
-          required_contexts: '[]'
+          required_contexts: "[]"
           production_environment: false
           bucket_name: ${{ env.PROJECT }}
           version: ${{ format('1.0.0.{0}', github.run_number) }}

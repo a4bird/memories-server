@@ -12,6 +12,9 @@
     "codegen": "graphql-codegen",
     "format": "prettier \"**/*.ts\" --write"
   },
+  "_moduleAliases": {
+    "src": "."
+  },
   "jest-junit": {
     "outputDirectory": "./test-results"
   },

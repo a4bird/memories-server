@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { UserAccount } from '../entities/UserAccount';
+import { UserAccount } from '../entities/userAccount';
 
 export type MyContext = {
   // TODO: Setup session if needed

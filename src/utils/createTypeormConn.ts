@@ -1,5 +1,5 @@
 import { getConnectionOptions, createConnection } from 'typeorm';
-import { UserAccount } from '../entities/UserAccount';
+import { UserAccount } from '../entities/userAccount';
 
 export const createTypeormConn = async () => {
   const connectionOptions = await getConnectionOptions(process.env.NODE_ENV);
