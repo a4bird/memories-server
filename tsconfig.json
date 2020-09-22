@@ -1,13 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "paths": {
+      "src/*": ["./src/*"]
+    },
+    "removeComments": true,
     "skipLibCheck": true,
     "strict": true,
     "strictFunctionTypes": false,
     "strictPropertyInitialization": false,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  }
+    "target": "ES2018"
+  },
+  "include": ["src/**/*.ts"]
 }

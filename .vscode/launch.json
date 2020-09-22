@@ -12,7 +12,13 @@
       "cwd": "${workspaceRoot}",
       "args": ["src/index.ts"],
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/ts-node-dev",
-      "runtimeArgs": ["--nolazy"],
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "tsconfig-paths/register",
+        "-r",
+        "dotenv/config"
+      ],
       "restart": true
     },
     {

@@ -13,6 +13,17 @@ services:
       MYSQL_ROOT_PASSWORD: Password1
 
     restart: always
+  graphql:
+    image: graphql-gateway:latest
+    build: .
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+    ports:
+      - 4000:4000
   # api:
   #   container_name: parnteruser-api
   #   build: .

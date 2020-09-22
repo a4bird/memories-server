@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "prestart": "yarn codegen",
-    "start": "ts-node-dev --respawn src/index.ts",
+    "build": "tsc --project tsconfig.build.json",
+    "start": "ts-node-dev -r dotenv/config -r tsconfig-paths/register src/index",
     "test": "jest",
     "codegen": "graphql-codegen",
     "format": "prettier \"**/*.ts\" --write"
@@ -30,11 +31,13 @@
     "@types/uuid": "^8.3.0",
     "@types/yup": "^0.29.6",
     "apollo-server-testing": "^2.16.1",
+    "dotenv": "^8.2.0",
     "jest": "^26.3.0",
     "prettier": "^2.0.5",
     "ts-jest": "^26.2.0",
     "ts-node": "8.10.2",
     "ts-node-dev": "^1.0.0-pre.61",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "3.9.7"
   },
   "dependencies": {

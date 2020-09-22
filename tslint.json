@@ -1,0 +1,15 @@
+{
+	"defaultSeverity": "error",
+	"extends": [
+		"tslint:recommended",
+		"tslint-config-prettier"
+	],
+	"jsRules": {},
+	"rules": {
+		"no-conditional-assignment": true,
+		"no-sparse-arrays": true,
+		"no-invalid-template-strings": true,
+		"no-console": false
+	},
+	"rulesDirectory": []
+}
