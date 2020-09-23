@@ -73,7 +73,7 @@ jobs:
       - name: Check previous deployments
         if: env.PREV_ENV != '' && steps.check_previous_stage.outputs.data == '[]'
         run: |
-          echo "::error ::Must deploy to ${{ env.PREV_ENV }} environment before ${{ github.event.deployment.environment | jq }}"
+          echo "::error ::Must deploy to ${{ env.PREV_ENV }} environment before ${{ github.event.deployment.environment}}"
           exit 1
 
       - name: Fetch docker build tag
