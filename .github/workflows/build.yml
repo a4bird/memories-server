@@ -1,4 +1,4 @@
-name: Dev Deployment
+name: Build Graphql Server
 
 on:
   pull_request:
