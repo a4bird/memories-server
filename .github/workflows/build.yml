@@ -102,8 +102,12 @@ jobs:
           auto_merge: false
           required_contexts: "[]"
           production_environment: false
-          docker_tag: ${{ needs.setup.outputs.docker-tag }}
-          version: ${{ format('1.0.0.{0}', github.run_number) }}
+          payload: "{ 'docker_tag': ${{ needs.setup.outputs.docker-tag }}, 'version': ${{ format('1.0.0.{0}', github.run_number) }}  }"
+         
+            
+
+          # docker_tag: ${{ needs.setup.outputs.docker-tag }}
+          # version: ${{ format('1.0.0.{0}', github.run_number) }}
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_ORG_PAT }} # using a PAT here as the GITHUB_TOKEN doesn't propagate events (https://docs.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token#using-the-github_token-in-a-workflow)
 
