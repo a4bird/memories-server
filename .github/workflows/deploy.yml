@@ -102,6 +102,7 @@ jobs:
           role-duration-seconds: 1200
 
       - name: Deploy to ap-southeast-2
+        id: cdk-deploy
         env:
           AWS_TAG_REPOSITORY: ${{ github.repository }}
           AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
@@ -122,4 +123,7 @@ jobs:
           CONTAINER_APOLLO_REPORT_SCHEMA: true
           CONTAINER_APOLLO_GRAPH_VARIANT: dev-${{ needs.setup.outputs.slug }}
           CONTAINER_APOLLO_SERVER_USER_VERSION: ${{ github.event.deployment.payload.docker_tag }}
+        run: |
+          npm run cdk-deploy
+          echo ::set-output name=url::https://${AWS_ROUTE53_SUBDOMAIN}.${AWS_ROUTE53_DOMAIN}
           
