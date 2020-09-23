@@ -1,3 +1,15 @@
+interface EnvironmentVariables {
+  port: number;
+  apollo: {
+    introspectionEnabled: boolean;
+    playgroundEnabled: boolean;
+    reportSchema: boolean;
+  }; 
+}
+
+
+
+// TODO Need to be refactored
 export const expiration = process.env.JWT_EXPIRATION_MS
   ? parseInt(process.env.JWT_EXPIRATION_MS)
   : 24 * 60 * 60 * 1000;

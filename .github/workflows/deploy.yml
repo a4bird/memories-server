@@ -5,9 +5,9 @@ on: deployment
 env:
   PROJECT: a4bird-memories
   AWS_ACCOUNT_NUMBER: ${{secrets.AWS_ACCOUNT_NUMBER}}
-  AWS_REGION: ap-southeast-2
   AWS_PRIMARY_REGION: ap-southeast-2
   AWS_ROLE_TO_ASSUME: arn:aws:iam::${{ secrets.AWS_ACCOUNT_NUMBER }}:role/admin
+  AWS_ECR_REPO_NAME: memories-server
   PREV_ENV: ""
 
 jobs:
@@ -73,57 +73,53 @@ jobs:
       - name: Check previous deployments
         if: env.PREV_ENV != '' && steps.check_previous_stage.outputs.data == '[]'
         run: |
-          echo "::error ::Must deploy to ${{ env.PREV_ENV }} environment before ${{ github.event.deployment.environment }}"
+          echo "::error ::Must deploy to ${{ env.PREV_ENV }} environment before ${{ github.event.deployment.environment}}"
           exit 1
 
       - name: Fetch docker build tag
         run: |
-          echo "::info ::Deployment payload: ${{ github.event.deployment.* }}"
+          echo "::info ::Deployment payload: ${{ toJSON(github.event.deployment) }}"
 
-      # - name: Checkout
-      #   uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      # - name: Setup Node.js
-      #   uses: actions/setup-node@v1
-      #   with:
-      #     node-version: "${{ env.NODE_VERSION }}"
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
 
-      # - name: Install Dependencies
-      #   run: npm run cdk-install
+      - name: Install Dependencies
+        run: npm run cdk-install
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   id: login-aws
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: ${{ env.AWS_PRIMARY_REGION }}
-      #     role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
-      #     role-duration-seconds: 1200
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        id: login-aws
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_PRIMARY_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          role-duration-seconds: 1200
 
-      # - name: Deploy to ap-southeast-2
-      #   env:
-      #     AWS_TAG_REPOSITORY: ${{ github.repository }}
-      #     AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
-      #     AWS_CDK_DEPLOY_REGION: ap-southeast-2
-      #     AWS_CDK_STACK_ID: memory-server
-      #     AWS_CERTIFICATE_ARN: arn:aws:acm:${{ env.AWS_PRIMARY_REGION }}:${{ steps.login-aws.outputs.aws-account-id }}:certificate/${{ secrets.STG_AWS_CERTIFICATE_ID }}
-      #     AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.KUMO_DEVELOPMENT_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
-      #     AWS_FARGATE_DESIRED_COUNT: 2
-      #     AWS_FARGATE_MIN_CAPACITY: 2
-      #     AWS_FARGATE_MAX_CAPACITY: 4
-      #     AWS_ROUTE53_DOMAIN: a4brd.tk
-      #     AWS_ROUTE53_SUBDOMAIN: memories-server-${{ needs.setup.outputs.slug }}
-      #     AWS_WAF_ENABLED: true
-      #     DOCKER_IMAGE_TAG: ${{ needs.tag-image.outputs.tag }}
-      #     CONTAINER_APOLLO_INTROSPECTION_ENABLED: false
-      #     CONTAINER_APOLLO_PLAYGROUND_ENABLED: false
-      #     CONTAINER_APOLLO_REPORT_SCHEMA: true
-      #     CONTAINER_APOLLO_GRAPH_VARIANT: staging
-      #     CONTAINER_APOLLO_KEY: ${{ secrets.APOLLO_KEY }}
-      #     CONTAINER_APOLLO_SERVER_USER_VERSION: ${{ needs.tag-image.outputs.tag }}
-      #     CONTAINER_BSL_BASE_URL: https://api.03.pp.ofx.com
-      #     CONTAINER_PAYMENTS_BASE_URL: https://external.payments.staging.non.c1.ofx.com
-      #     CONTAINER_AUTH_BASE_URL: https://authserver.03.pp.ofx.com
-      #     CONTAINER_AUTH_PUBLIC_KEY: ${{ secrets.STG_AUTH_PUBLIC_KEY }}
-      #     CONTAINER_BSL_SVC_BASE_URL: https://internal.private.stg.aws.ofx.com
+      - name: Deploy to ap-southeast-2
+        env:
+          AWS_TAG_REPOSITORY: ${{ github.repository }}
+          AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
+          AWS_CDK_DEPLOY_REGION: ap-southeast-2
+          AWS_CDK_STACK_ID: memory-server-${{ needs.setup.outputs.slug }}
+          AWS_CERTIFICATE_ARN: arn:aws:acm:${{ env.AWS_PRIMARY_REGION }}:${{ steps.login-aws.outputs.aws-account-id }}:certificate/${{ secrets.AWS_CERTIFICATE_ID }}
+          AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.AWS_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
+          AWS_FARGATE_CLUSTER_NAME: ${{ env.PROJECT }}
+          AWS_FARGATE_SERVICE_NAME: ${{ needs.setup.outputs.slug }}
+          AWS_FARGATE_DESIRED_COUNT: 2
+          AWS_FARGATE_MIN_CAPACITY: 2
+          AWS_FARGATE_MAX_CAPACITY: 4
+          AWS_ROUTE53_DOMAIN: a4brd.tk
+          AWS_ROUTE53_SUBDOMAIN: memories-server-${{ needs.setup.outputs.slug }}
+          DOCKER_IMAGE_TAG: ${{ github.event.deployment.payload.docker_tag }}
+          CONTAINER_APOLLO_INTROSPECTION_ENABLED: false
+          CONTAINER_APOLLO_PLAYGROUND_ENABLED: false
+          CONTAINER_APOLLO_REPORT_SCHEMA: true
+          CONTAINER_APOLLO_GRAPH_VARIANT: dev-${{ needs.setup.outputs.slug }}
+          CONTAINER_APOLLO_SERVER_USER_VERSION: ${{ github.event.deployment.payload.docker_tag }}
+          

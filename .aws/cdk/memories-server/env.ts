@@ -43,10 +43,10 @@ const env: CdkVariables = {
     region: process.env.AWS_CDK_DEPLOY_REGION!,
   },
   tags: {
-    PROJECT: process.env.AWS_TAG_PROJECT || 'memories-graphql',
+    PROJECT: process.env.AWS_TAG_PROJECT || 'Memories',
     REPOSITORY: process.env.AWS_TAG_REPOSITORY!,
   },
-  awsCdkStackId: process.env.AWS_CDK_STACK_ID || 'graphql',
+  awsCdkStackId: process.env.AWS_CDK_STACK_ID || 'memory-server',
   awsCertificateArn: process.env.AWS_CERTIFICATE_ARN!,
   awsEcrRepositoryArn: process.env.AWS_ECR_REPO_ARN || '',
   awsFargateClusterName: process.env.AWS_FARGATE_CLUSTER_NAME,
