@@ -104,6 +104,8 @@ jobs:
       - name: Deploy to ap-southeast-2
         id: cdk-deploy
         env:
+          ENV_SUFFIX: dev
+          SLUG: ${{ needs.setup.outputs.slug }}
           AWS_TAG_REPOSITORY: ${{ github.repository }}
           AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
           AWS_CDK_DEPLOY_REGION: ap-southeast-2

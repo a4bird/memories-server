@@ -1,6 +1,8 @@
 import * as cdk from '@aws-cdk/core';
 
 export interface CdkVariables extends cdk.StackProps {
+  envSuffix: string;
+  resourceSuffix: string;
   env: {
     account: string;
     region: string;
@@ -38,6 +40,8 @@ const getContainerEnvVariables = () => {
 };
 
 const env: CdkVariables = {
+  envSuffix: process.env.ENV_SUFFIX!,
+  resourceSuffix: process.env.SLUG!,
   env: {
     account: process.env.AWS_CDK_DEPLOY_ACCOUNT!,
     region: process.env.AWS_CDK_DEPLOY_REGION!,

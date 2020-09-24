@@ -4,6 +4,7 @@ import * as ecr from '@aws-cdk/aws-ecr';
 import { getVpc } from './constructs/getVpc';
 import createFargateService from './constructs/fargateService';
 import * as alb from './constructs/alb';
+import * as secrets from './constructs/secret';
 
 import { CdkVariables } from '../env';
 import createRecordSet from './constructs/route53';
@@ -36,13 +37,29 @@ export class MemoriesServerStack extends cdk.Stack {
       albSg
     });
 
+    const secret = secrets.getDbSecret(this, {
+      resourceSuffix: props.resourceSuffix,
+      envSuffix: props.envSuffix
+    });
+
+    const dbUsername = secret.secretValueFromJson('username').toString();
+    const dbUserPassword= secret.secretValueFromJson('password').toString();
+    const dbHost= secret.secretValueFromJson('host').toString();
+
+
+    const appEnvironmentVariables = {...props.appEnvironmentVariables, 
+      ['DB_USERNAME']: dbUsername,
+      ['DB_PASSWORD']: dbUserPassword,
+      ['DB_HOST']: dbHost,
+    }
+
     const fargateService = createFargateService(this, {
       alarmAction: alarmAction, // TODO Setting up Alarms
       containerPort: props.dockerContainerPort,
       cpu: props.awsFargateCpu,
       desiredCount: props.awsFargateDesiredInstanceCount,
       existingClusterName: props.awsFargateClusterName,
-      environment: props.appEnvironmentVariables,
+      environment: appEnvironmentVariables,
       image: ecs.ContainerImage.fromEcrRepository(
         ecrRepo,
         props.dockerImageTag

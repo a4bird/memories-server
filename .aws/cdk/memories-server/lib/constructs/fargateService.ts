@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
 import * as ecs from '@aws-cdk/aws-ecs';
-import { IVpc, SecurityGroup, Peer, Port, ISecurityGroup } from '@aws-cdk/aws-ec2';
+import { IVpc, SecurityGroup, Port, ISecurityGroup } from '@aws-cdk/aws-ec2';
 import * as logs from '@aws-cdk/aws-logs';
 
 interface FargateServiceProps {
