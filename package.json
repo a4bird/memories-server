@@ -7,7 +7,7 @@
   "scripts": {
     "prestart": "yarn codegen",
     "copy-schemas": "cpx src/**/*.graphql dist",
-    "build": "tsc --project tsconfig.build.json && npm run copy-schemas",
+    "build": "tsc --project tsconfig.build.json",
     "start": "ts-node-dev -r dotenv/config -r tsconfig-paths/register src/index",
     "cdk-deploy": "cd .aws/cdk/memories-server && npm run cdk-deploy",
     "cdk-destroy": "cd .aws/cdk/memories-server && npm run cdk-destroy",
