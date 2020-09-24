@@ -1,3 +1,7 @@
+# ECS Nat gateway alternatives
+
+https://github.com/aws/containers-roadmap/issues/419
+
 # Setup ecs ecr vpc endpoint
 
 https://aws.amazon.com/blogs/containers/using-vpc-endpoint-policies-to-control-amazon-ecr-access/

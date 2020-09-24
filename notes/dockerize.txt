@@ -20,6 +20,3 @@ aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS
 
 989464300156.dkr.ecr.ap-southeast-2.amazonaws.com/memories-server:4b362157dde47e69f5842feb0f21b8b727689510
 
-# ECS Nat gateway alternatives
-
-https://github.com/aws/containers-roadmap/issues/419
