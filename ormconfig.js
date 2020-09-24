@@ -3,11 +3,11 @@
 module.exports = {
   "name": "local",
   "type": "mysql",
-  "host": process.env.db_host || "localhost",
+  "host": process.env.DB_HOST || "localhost",
   "port": 3306,
-  "username": process.env.db_username || "root",
-  "password": process.env.db_password || "Password1",
-  "database": process.env.db_name || "MemoriesDB",
+  "username": process.env.DB_USERNAME || "root",
+  "password": process.env.DB_PASSWORD || "Password1",
+  "database": process.env.DB_NAME || "MemoriesDB",
   "synchronize": true,
   "logging": true,
   "entities": ["src/entities/*.*"]

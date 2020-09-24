@@ -1,6 +1,5 @@
 node_modules
 notes
-mysql-scripts
 yarn-error.log
 npm-debug.log
 mySql.Dockerfile
@@ -15,5 +14,4 @@ LICENSE
 .ts-node*
 coverage
 _docker
-.env
 __mocks__

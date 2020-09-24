@@ -3,27 +3,52 @@ import * as cdk from '@aws-cdk/core';
 import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as elb from '@aws-cdk/aws-elasticloadbalancingv2';
+import { SecurityGroup, Peer, Port, ISecurityGroup } from '@aws-cdk/aws-ec2';
 
 interface ApplicationLoadBalancerProps {
   alarmAction?: cloudwatch.IAlarmAction;
   vpc: ec2.IVpc;
+  albSg: ISecurityGroup
 }
 
 export const createApplicationLoadBalancer = (
   scope: cdk.Construct,
-  { alarmAction, vpc }: ApplicationLoadBalancerProps
+  { alarmAction, vpc, albSg }: ApplicationLoadBalancerProps
 ): elb.IApplicationLoadBalancer => {
+
+  
+  
+
   const alb = new elb.ApplicationLoadBalancer(scope, 'LoadBalancer', {
     vpc,
     internetFacing: true,
+    securityGroup: albSg
   });
 
   if (alarmAction) {
     setupAlarms(scope, alb, alarmAction);
   }
-
+  
   return alb;
 };
+
+
+interface SecurityGroupProps {
+  vpc: ec2.IVpc;
+}
+
+export const createSecurityGroup = (scope: cdk.Construct, { vpc }: SecurityGroupProps) : ISecurityGroup => {
+  const albSg = new SecurityGroup(scope, `alb-security-group`, {
+    vpc: vpc,
+    allowAllOutbound: false,
+    description: 'ALB Security Group'
+  });
+
+  albSg.addIngressRule(Peer.anyIpv4(), Port.tcp(80), `HTTP Traffic`);
+  albSg.addIngressRule(Peer.anyIpv4(), Port.tcp(443), `HTTPS Traffic`);
+
+  return albSg;
+}
 
 interface PublicListenerProps {
   certificateArn: string;

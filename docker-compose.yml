@@ -5,29 +5,23 @@ services:
     build:
       context: .
       dockerfile: mySql.Dockerfile
-    image: mysql-memories
-    container_name: mysql-memories
+    image: memories-db-mysql
+    container_name: memories-db
     ports:
-      - '3306:3306'
+      - '3303:3306'
     environment:
       MYSQL_ROOT_PASSWORD: Password1
 
     restart: always
   graphql:
-    image: graphql-gateway:latest
+    image: memories-server-graphql:latest
+    container_name: memories-server
     build: .
     depends_on:
       - db
-    env_file:
-      - .env
     environment:
-      NODE_ENV: production
+      NODE_ENV: local
+      JWT_SECRET: qowiueojwojfalksdjoqiwueo
+      DB_HOST: db
     ports:
-      - 4000:4000
-  # api:
-  #   container_name: parnteruser-api
-  #   build: .
-  #   depends_on:
-  #     - db
-  #   ports:
-  #     - "8380:80"
+      - 4003:4000

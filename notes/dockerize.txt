@@ -1,0 +1,11 @@
+# We have multiple stages in the multi-stage Dockerfile. We can stop at any particular stage with the flag — target as below
+# docker build --target ui-build -t webapp:v1 .
+
+https://github.com/nestjs/graphql/issues/135
+https://github.com/ardatan/graphql-tools/issues/273
+
+docker build --target build -t mem-ser/build .
+
+docker run -it --network=memories-server_default -e NODE_ENV=local -e JWT_SECRET=secret -e DB_HOST=memories-db --entrypoint sh memories-server-graphql
+
+JWT_SECRET=qowiueojwojfalksdjoqiwueo

@@ -1,7 +1,8 @@
 import * as cdk from '@aws-cdk/core';
 import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
 import * as ecs from '@aws-cdk/aws-ecs';
-import { IVpc } from '@aws-cdk/aws-ec2';
+import { IVpc, SecurityGroup, Peer, Port, ISecurityGroup } from '@aws-cdk/aws-ec2';
+import * as logs from '@aws-cdk/aws-logs';
 
 interface FargateServiceProps {
   alarmAction?: cloudwatch.IAlarmAction;
@@ -16,6 +17,7 @@ interface FargateServiceProps {
   memoryLimitMiB?: number;
   serviceName: string;
   vpc: IVpc;
+  albSg: ISecurityGroup
 }
 
 const createFargateService = (
@@ -33,6 +35,7 @@ const createFargateService = (
     memoryLimitMiB,
     serviceName,
     vpc,
+    albSg,
   }: FargateServiceProps
 ): ecs.FargateService => {
   const cluster = existingClusterName
@@ -60,8 +63,17 @@ const createFargateService = (
     environment,
     logging: new ecs.AwsLogDriver({
       streamPrefix: serviceName,
+      logRetention: logs.RetentionDays.ONE_WEEK
     }),
   });
+
+  const serviceSg = new SecurityGroup(scope, `svc-security-group`, {
+    vpc: vpc,
+    allowAllOutbound: true,
+    description: 'Cluster service Security Group'
+  });
+
+  serviceSg.addIngressRule(albSg, Port.tcp(containerPort), `${containerPort} port from anywhere`);
 
   container.addPortMappings({
     containerPort,
@@ -71,7 +83,8 @@ const createFargateService = (
     taskDefinition,
     cluster,
     desiredCount,
-    serviceName,
+    serviceName,    
+    securityGroups: [serviceSg]
   });
 
   if (alarmAction) {

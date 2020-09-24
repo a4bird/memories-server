@@ -110,7 +110,6 @@ jobs:
           AWS_CDK_STACK_ID: memory-server-${{ needs.setup.outputs.slug }}
           AWS_CERTIFICATE_ARN: arn:aws:acm:${{ env.AWS_PRIMARY_REGION }}:${{ steps.login-aws.outputs.aws-account-id }}:certificate/${{ secrets.AWS_CERTIFICATE_ID }}
           AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.AWS_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
-          AWS_FARGATE_CLUSTER_NAME: ${{ env.PROJECT }}
           AWS_FARGATE_SERVICE_NAME: ${{ needs.setup.outputs.slug }}
           AWS_FARGATE_DESIRED_COUNT: 2
           AWS_FARGATE_MIN_CAPACITY: 2
