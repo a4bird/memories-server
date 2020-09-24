@@ -4,7 +4,7 @@ on: deployment
 
 env:
   PROJECT: a4bird-memories
-  AWS_ACCOUNT_NUMBER: ${{secrets.AWS_ACCOUNT_NUMBER}}
+  AWS_ACCOUNT_NUMBER: ${{ secrets.AWS_ACCOUNT_NUMBER }}
   AWS_PRIMARY_REGION: ap-southeast-2
   AWS_ROLE_TO_ASSUME: arn:aws:iam::${{ secrets.AWS_ACCOUNT_NUMBER }}:role/admin
   AWS_ECR_REPO_NAME: memories-server
@@ -119,6 +119,7 @@ jobs:
           AWS_ROUTE53_DOMAIN: a4brd.tk
           AWS_ROUTE53_SUBDOMAIN: memories-server-${{ needs.setup.outputs.slug }}
           DOCKER_IMAGE_TAG: ${{ github.event.deployment.payload.docker_tag }}
+          CONTAINER_JWT_SECRET: $ {{ secrets.JWT_SECRET }}
           CONTAINER_APOLLO_INTROSPECTION_ENABLED: false
           CONTAINER_APOLLO_PLAYGROUND_ENABLED: false
           CONTAINER_APOLLO_REPORT_SCHEMA: true
