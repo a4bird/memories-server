@@ -5,7 +5,7 @@ WORKDIR /src
 COPY . /src
 
 RUN npm install
-RUN npm run build && npm run copy-schemas
+RUN npm run build
 
 FROM node:14.9.0 as runtime
 WORKDIR /app

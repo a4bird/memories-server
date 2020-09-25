@@ -21,3 +21,8 @@ aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS
 
 989464300156.dkr.ecr.ap-southeast-2.amazonaws.com/memories-server:340f92a27b3de4efbf81565b0cec61b8c663280b
 
+# Issue npm script
+
+https://medium.com/@jakubsynowiec/you-should-always-quote-your-globs-in-npm-scripts-621887a2a784
+
+so npm script behave differently depending upon shell... windows vs linux
