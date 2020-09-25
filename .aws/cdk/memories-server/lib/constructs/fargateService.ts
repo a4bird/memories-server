@@ -18,6 +18,7 @@ interface FargateServiceProps {
   serviceName: string;
   vpc: IVpc;
   albSg: ISecurityGroup
+  rdsSg: ISecurityGroup
 }
 
 const createFargateService = (
@@ -36,6 +37,7 @@ const createFargateService = (
     serviceName,
     vpc,
     albSg,
+    rdsSg
   }: FargateServiceProps
 ): ecs.FargateService => {
   const cluster = existingClusterName
@@ -53,6 +55,7 @@ const createFargateService = (
     scope,
     'FargateTaskDefinition',
     {
+      family: serviceName,
       cpu,
       memoryLimitMiB,
     }
@@ -74,6 +77,13 @@ const createFargateService = (
   });
 
   serviceSg.addIngressRule(albSg, Port.tcp(containerPort), `${containerPort} port from anywhere`);
+
+  rdsSg.addIngressRule(
+    serviceSg,
+    Port.tcp(3306),
+    "Fargate service Sg"
+  );
+
 
   container.addPortMappings({
     containerPort,

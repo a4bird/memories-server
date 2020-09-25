@@ -8,6 +8,7 @@ import * as secrets from './constructs/secret';
 
 import { CdkVariables } from '../env';
 import createRecordSet from './constructs/route53';
+import { SecurityGroup } from '@aws-cdk/aws-ec2';
 
 export class MemoriesServerStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: CdkVariables) {
@@ -15,6 +16,8 @@ export class MemoriesServerStack extends cdk.Stack {
 
     // The code that defines your stack goes here
     // TODO Setting up Alarms and SNS
+
+    const { envSuffix, resourceSuffix } = props;
 
     const vpc = getVpc(this);
 
@@ -28,6 +31,15 @@ export class MemoriesServerStack extends cdk.Stack {
 
     const fullDomainName = `${props.awsRoute53Subdomain}.${props.awsRoute53Domain}`;
 
+    const rdsSecurityGroupId = cdk.Fn.importValue(
+      `memories-db-${envSuffix}-${resourceSuffix}::rdsSGId`
+    );
+  
+    const rdsSg = SecurityGroup.fromSecurityGroupId(
+      this,
+      "Rds Security Group Id",
+      rdsSecurityGroupId
+    );
 
     const albSg = alb.createSecurityGroup(this, { vpc });
 
@@ -38,8 +50,8 @@ export class MemoriesServerStack extends cdk.Stack {
     });
 
     const secret = secrets.getDbSecret(this, {
-      resourceSuffix: props.resourceSuffix,
-      envSuffix: props.envSuffix
+      resourceSuffix: resourceSuffix,
+      envSuffix: envSuffix
     });
 
     const dbUsername = secret.secretValueFromJson('username').toString();
@@ -69,7 +81,8 @@ export class MemoriesServerStack extends cdk.Stack {
       memoryLimitMiB: props.awsFargateMemoryLimit,
       serviceName: props.awsFargateServiceName ?? id,
       vpc,
-      albSg
+      albSg,
+      rdsSg,
     });
 
     alb.addPublicHttpRedirectListener(this, loadBalancer);
