@@ -8,6 +8,7 @@ docker build --target build -t mem-ser/build .
 
 docker run -it --network=memories-server_default -e NODE_ENV=local -e JWT_SECRET=secret -e DB_HOST=memories-db --entrypoint sh memories-server-graphql
 
+docker rmi $(docker images | grep "2 weeks ago" | awk '{print $3}')
 
 docker run -it --entrypoint sh 989464300156.dkr.ecr.ap-southeast-2.amazonaws.com/memories-server
 
