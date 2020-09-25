@@ -19,7 +19,7 @@ JWT_SECRET=qowiueojwojfalksdjoqiwueo
 aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 989464300156.dkr.ecr.ap-southeast-2.amazonaws.com
 
 
-989464300156.dkr.ecr.ap-southeast-2.amazonaws.com/memories-server:340f92a27b3de4efbf81565b0cec61b8c663280b
+989464300156.dkr.ecr.ap-southeast-2.amazonaws.com/memories-server:3bf86d3e4f70e68fd42f29d1697e58e05a91ba52
 
 # Issue npm script
 
