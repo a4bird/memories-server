@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "prestart": "yarn codegen",
-    "copy-schemas": "cpx src/**/*.graphql dist",
+    "copy-schemas": "cpx src/schema/graphql/*.graphql dist/schema/graphql",
     "build": "tsc --project tsconfig.build.json",
     "start": "ts-node-dev -r dotenv/config -r tsconfig-paths/register src/index",
     "cdk-deploy": "cd .aws/cdk/memories-server && npm run cdk-deploy",

@@ -9,7 +9,7 @@ import path from 'path';
 // const typesArray = loadFilesSync(path.join(__dirname, './types'));
 // const typeDefs = mergeTypeDefs(typesArray);
 
-const typesArray = loadFilesSync(path.join(__dirname, '/**/*.graphql'));
+const typesArray = loadFilesSync(path.join(__dirname, '/graphql/*.graphql'));
 const typeDefs = mergeTypeDefs(typesArray);
 
 export default makeExecutableSchema({
