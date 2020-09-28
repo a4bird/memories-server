@@ -1,6 +1,8 @@
 name: Deploy Graphql Server
 
-on: deployment
+on:
+  deployment:
+  workflow_dispatch:
 
 env:
   PROJECT: a4bird-memories
