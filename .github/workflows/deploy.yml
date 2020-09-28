@@ -137,7 +137,7 @@ jobs:
           DOCKER_IMAGE_TAG: ${{ github.event.deployment.payload.docker_tag }}
           CONTAINER_JWT_SECRET: ${{ secrets.JWT_SECRET }}
           CONTAINER_APOLLO_INTROSPECTION_ENABLED: false
-          CONTAINER_APOLLO_PLAYGROUND_ENABLED: false
+          CONTAINER_APOLLO_PLAYGROUND_ENABLED: true
           CONTAINER_APOLLO_REPORT_SCHEMA: true
           CONTAINER_APOLLO_GRAPH_VARIANT: ${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
           CONTAINER_APOLLO_SERVER_USER_VERSION: ${{ github.event.deployment.payload.docker_tag }}

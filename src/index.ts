@@ -32,7 +32,8 @@ export const startServer = async () => {
   server.applyMiddleware({
     app,
     path: '/graphql',
-    cors: { credentials: true, origin },
+    // TODO Cors
+    // cors: { credentials: true, origin },
   });
 
   await createTypeormConn();

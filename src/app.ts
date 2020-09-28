@@ -5,6 +5,9 @@ import { origin } from './env';
 
 export const app = express();
 
-app.use(cors({ credentials: true, origin }));
+// TODO Origin policy
+// app.use(cors({ credentials: true, origin }));
+
+app.use(cors({ credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
