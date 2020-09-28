@@ -102,6 +102,7 @@ jobs:
 
       - name: Deploy Vpce to ap-southeast-2
         id: cdk-vpce-deploy
+        working-directory: ./.aws/cdk/memories-server
         env:
           ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
           SLUG: ${{ needs.setup.outputs.slug }}
@@ -114,6 +115,7 @@ jobs:
 
       - name: Deploy Server to ap-southeast-2
         id: cdk-server-deploy
+        working-directory: ./.aws/cdk/memories-server
         env:
           ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
           SLUG: ${{ needs.setup.outputs.slug }}
@@ -144,6 +146,7 @@ jobs:
 
       - name: teardown Vpce stack in ap-southeast-2
         id: cdk-vpce-teardown
+        working-directory: ./.aws/cdk/memories-server
         env:
           ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
           SLUG: ${{ needs.setup.outputs.slug }}

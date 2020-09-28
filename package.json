@@ -10,7 +10,6 @@
     "copy-schemas-windows": "cpx src/**/*.graphql dist",
     "build": "tsc --project tsconfig.build.json && npm run copy-schemas-linux",
     "start": "ts-node-dev -r dotenv/config -r tsconfig-paths/register src/index",
-    "cdk-deploy": "cd .aws/cdk/memories-server && npm run cdk-deploy",
     "cdk-destroy": "cd .aws/cdk/memories-server && npm run cdk-destroy",
     "cdk-install": "cd .aws/cdk/memories-server && npm install",
     "cdk-synth": "cd .aws/cdk/memories-server && npm run cdk-synth",
