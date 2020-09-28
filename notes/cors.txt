@@ -1,0 +1,5 @@
+# Cors issue , playground not working on endpoint /graphql
+
+ - https://stackoverflow.com/questions/58179129/express-cors-policy-preventing-apollo-client-from-fetching-from-server
+ - https://stackoverflow.com/questions/56045957/problem-deploying-apollo-express-server-to-heroku-get-query-missing
+ - https://medium.com/zero-equals-false/using-cors-in-express-cac7e29b005b
