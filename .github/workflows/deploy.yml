@@ -103,7 +103,7 @@ jobs:
 
       - name: Deploy Vpce to ap-southeast-2
         id: cdk-vpce-deploy
-        working-directory: .aws/cdk/scripts
+        working-directory: .aws/cdk
         env:
           ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
           SLUG: ${{ needs.setup.outputs.slug }}
@@ -113,7 +113,7 @@ jobs:
           AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
         run: |
           ls -a
-          bash ./deploy-vpce.sh
+      #    bash ./deploy-vpce.sh
       # - name: Deploy Server to ap-southeast-2
       #   id: cdk-server-deploy
       #   working-directory: .aws/cdk/scripts
