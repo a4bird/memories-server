@@ -103,7 +103,7 @@ jobs:
 
       - name: Deploy Vpce to ap-southeast-2
         id: cdk-vpce-deploy
-        working-directory: .aws/cdk
+        working-directory: .aws/scripts
         env:
           ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
           SLUG: ${{ needs.setup.outputs.slug }}
@@ -112,37 +112,36 @@ jobs:
           AWS_CDK_DEPLOY_REGION: ap-southeast-2
           AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
         run: |
-          ls -a
-      #    bash ./deploy-vpce.sh
-      # - name: Deploy Server to ap-southeast-2
-      #   id: cdk-server-deploy
-      #   working-directory: .aws/cdk/scripts
-      #   env:
-      #     ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
-      #     SLUG: ${{ needs.setup.outputs.slug }}
-      #     AWS_TAG_REPOSITORY: ${{ github.repository }}
-      #     AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
-      #     AWS_CDK_DEPLOY_REGION: ap-southeast-2
-      #     AWS_CDK_STACK_ID: memory-server-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
-      #     AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
-      #     AWS_CERTIFICATE_ARN: arn:aws:acm:${{ env.AWS_PRIMARY_REGION }}:${{ steps.login-aws.outputs.aws-account-id }}:certificate/${{ secrets.AWS_CERTIFICATE_ID }}
-      #     AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.AWS_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
-      #     AWS_FARGATE_SERVICE_NAME: ${{ needs.setup.outputs.slug }}
-      #     AWS_FARGATE_DESIRED_COUNT: 2
-      #     AWS_FARGATE_MIN_CAPACITY: 2
-      #     AWS_FARGATE_MAX_CAPACITY: 4
-      #     AWS_ROUTE53_DOMAIN: a4brd.tk
-      #     AWS_ROUTE53_SUBDOMAIN: memories-server-${{ needs.setup.outputs.slug }}
-      #     DOCKER_IMAGE_TAG: ${{ github.event.deployment.payload.docker_tag }}
-      #     CONTAINER_JWT_SECRET: $ {{ secrets.JWT_SECRET }}
-      #     CONTAINER_APOLLO_INTROSPECTION_ENABLED: false
-      #     CONTAINER_APOLLO_PLAYGROUND_ENABLED: false
-      #     CONTAINER_APOLLO_REPORT_SCHEMA: true
-      #     CONTAINER_APOLLO_GRAPH_VARIANT: ${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
-      #     CONTAINER_APOLLO_SERVER_USER_VERSION: ${{ github.event.deployment.payload.docker_tag }}
-      #   run: |
-      #     bash ./deploy-server.sh
-      #     echo ::set-output name=url::https://${AWS_ROUTE53_SUBDOMAIN}.${AWS_ROUTE53_DOMAIN}
+          bash ./deploy-vpce.sh
+      - name: Deploy Server to ap-southeast-2
+        id: cdk-server-deploy
+        working-directory: .aws/scripts
+        env:
+          ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
+          SLUG: ${{ needs.setup.outputs.slug }}
+          AWS_TAG_REPOSITORY: ${{ github.repository }}
+          AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
+          AWS_CDK_DEPLOY_REGION: ap-southeast-2
+          AWS_CDK_STACK_ID: memory-server-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
+          AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
+          AWS_CERTIFICATE_ARN: arn:aws:acm:${{ env.AWS_PRIMARY_REGION }}:${{ steps.login-aws.outputs.aws-account-id }}:certificate/${{ secrets.AWS_CERTIFICATE_ID }}
+          AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.AWS_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
+          AWS_FARGATE_SERVICE_NAME: ${{ needs.setup.outputs.slug }}
+          AWS_FARGATE_DESIRED_COUNT: 2
+          AWS_FARGATE_MIN_CAPACITY: 2
+          AWS_FARGATE_MAX_CAPACITY: 4
+          AWS_ROUTE53_DOMAIN: a4brd.tk
+          AWS_ROUTE53_SUBDOMAIN: memories-server-${{ needs.setup.outputs.slug }}
+          DOCKER_IMAGE_TAG: ${{ github.event.deployment.payload.docker_tag }}
+          CONTAINER_JWT_SECRET: $ {{ secrets.JWT_SECRET }}
+          CONTAINER_APOLLO_INTROSPECTION_ENABLED: false
+          CONTAINER_APOLLO_PLAYGROUND_ENABLED: false
+          CONTAINER_APOLLO_REPORT_SCHEMA: true
+          CONTAINER_APOLLO_GRAPH_VARIANT: ${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
+          CONTAINER_APOLLO_SERVER_USER_VERSION: ${{ github.event.deployment.payload.docker_tag }}
+        run: |
+          bash ./deploy-server.sh
+          echo ::set-output name=url::https://${AWS_ROUTE53_SUBDOMAIN}.${AWS_ROUTE53_DOMAIN}
       # - name: teardown Vpce stack in ap-southeast-2
       #   id: cdk-vpce-teardown
       #   working-directory: .aws/cdk/memories-server
