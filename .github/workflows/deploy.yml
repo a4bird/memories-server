@@ -111,6 +111,7 @@ jobs:
           AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
           AWS_CDK_DEPLOY_REGION: ap-southeast-2
           AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
+          AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.AWS_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
         run: |
           npm run cdk deploy memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} -- --verbose --require-approval never
       # - name: Deploy Server to ap-southeast-2
