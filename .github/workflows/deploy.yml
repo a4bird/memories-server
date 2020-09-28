@@ -117,7 +117,7 @@ jobs:
 
       - name: Deploy Server to ap-southeast-2
         id: cdk-server-deploy
-        working-directory: .aws/scripts
+        working-directory: .aws/cdk/memories-server
         env:
           ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
           SLUG: ${{ needs.setup.outputs.slug }}
