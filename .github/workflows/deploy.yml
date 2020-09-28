@@ -101,7 +101,7 @@ jobs:
 
       - name: Deploy Vpce to ap-southeast-2
         id: cdk-vpce-deploy
-        working-directory: ./.aws/cdk/memories-server
+        working-directory: .aws/cdk/scripts
         env:
           ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
           SLUG: ${{ needs.setup.outputs.slug }}
@@ -110,11 +110,11 @@ jobs:
           AWS_CDK_DEPLOY_REGION: ap-southeast-2
           AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
         run: |
-          $(npm bin)/cdk deploy memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} --verbose --require-approval never
+          bash ./deploy-vpce.sh
 
       - name: Deploy Server to ap-southeast-2
         id: cdk-server-deploy
-        working-directory: .aws/cdk/memories-server
+        working-directory: .aws/cdk/scripts
         env:
           ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
           SLUG: ${{ needs.setup.outputs.slug }}
@@ -139,18 +139,17 @@ jobs:
           CONTAINER_APOLLO_GRAPH_VARIANT: ${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
           CONTAINER_APOLLO_SERVER_USER_VERSION: ${{ github.event.deployment.payload.docker_tag }}
         run: |
-          $(npm bin)/cdkcdk deploy memory-server-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} --verbose --require-approval never
+          bash ./deploy-server.sh
           echo ::set-output name=url::https://${AWS_ROUTE53_SUBDOMAIN}.${AWS_ROUTE53_DOMAIN}
-
-      - name: teardown Vpce stack in ap-southeast-2
-        id: cdk-vpce-teardown
-        working-directory: .aws/cdk/memories-server
-        env:
-          ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
-          SLUG: ${{ needs.setup.outputs.slug }}
-          AWS_TAG_REPOSITORY: ${{ github.repository }}
-          AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
-          AWS_CDK_DEPLOY_REGION: ap-southeast-2
-          AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
-        run: |
-          npm run cdk destroy memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} --verbose --force
+      # - name: teardown Vpce stack in ap-southeast-2
+      #   id: cdk-vpce-teardown
+      #   working-directory: .aws/cdk/memories-server
+      #   env:
+      #     ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
+      #     SLUG: ${{ needs.setup.outputs.slug }}
+      #     AWS_TAG_REPOSITORY: ${{ github.repository }}
+      #     AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
+      #     AWS_CDK_DEPLOY_REGION: ap-southeast-2
+      #     AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
+      #   run: |
+      #     npm run cdk destroy memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} --verbose --force
