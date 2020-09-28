@@ -8,20 +8,20 @@ PROJECT=memories
 : ${AWS_CDK_VPCE_STACK_ID?"AWS_CDK_VPCE_STACK_ID env variable is required"}
 : ${SLUG?"SLUG env variable is required"}
 
-stack_name="${AWS_CDK_VPCE_STACK_ID}"
+stack_name=$AWS_CDK_VPCE_STACK_ID
 stack_id=$(aws cloudformation describe-stacks --stack-name $stack_name --query "Stacks[0].StackId" --output text) || stack_id=""
 
 cd ../cdk/memories-server
 echo 'Deploying stack '$stack_name
 
-npm install
 npm run build
+npm run cdk list
 
 npm run cdk deploy $stack_name -- \
     --strict \
     --verbose \
     --require-approval never \
-    --context StackName=$stack_name \    
+    --context StackName=$stack_name \
     --tags billing=a4bird \
     --tags Enterprise=Memories \
     --tags Project=$PROJECT \

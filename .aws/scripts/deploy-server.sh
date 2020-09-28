@@ -14,14 +14,13 @@ stack_id=$(aws cloudformation describe-stacks --stack-name $stack_name --query "
 cd ../cdk/memories-server
 echo 'Deploying stack '$stack_name
 
-npm install
 npm run build
 
 npm run cdk deploy $stack_name -- \
     --strict \
     --verbose \
     --require-approval never \
-    --context StackName=$stack_name \    
+    --context StackName=$stack_name \
     --tags billing=a4bird \
     --tags Enterprise=Memories \
     --tags Project=$PROJECT \

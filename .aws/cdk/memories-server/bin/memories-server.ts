@@ -7,5 +7,13 @@ import serverEnvVariables from '../env';
 import vpceEnvVariables from '../vpce-env';
 
 const app = new cdk.App();
-new MemoriesServerStack(app, serverEnvVariables.awsCdkStackId, serverEnvVariables);
-new MemoriesVpceStack(app, vpceEnvVariables.awsCdkVpceStackId, vpceEnvVariables);
+new MemoriesServerStack(
+  app,
+  serverEnvVariables.awsCdkStackId,
+  serverEnvVariables
+);
+new MemoriesVpceStack(
+  app,
+  vpceEnvVariables.awsCdkVpceStackId,
+  vpceEnvVariables
+);
