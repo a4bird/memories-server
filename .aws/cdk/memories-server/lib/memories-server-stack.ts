@@ -1,14 +1,15 @@
 import * as cdk from '@aws-cdk/core';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as ecr from '@aws-cdk/aws-ecr';
-import { getVpc } from './constructs/getVpc';
+import { SecurityGroup } from '@aws-cdk/aws-ec2';
+
+import { getVpc } from './constructs/vpc';
 import createFargateService from './constructs/fargateService';
 import * as alb from './constructs/alb';
 import * as secrets from './constructs/secret';
+import createRecordSet from './constructs/route53';
 
 import { CdkVariables } from '../env';
-import createRecordSet from './constructs/route53';
-import { SecurityGroup } from '@aws-cdk/aws-ec2';
 
 export class MemoriesServerStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: CdkVariables) {

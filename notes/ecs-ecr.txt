@@ -9,3 +9,6 @@ https://aws.amazon.com/blogs/containers/using-vpc-endpoint-policies-to-control-a
 https://dev.to/danquack/private-fargate-deployment-with-vpc-endpoints-1h0p
 
 https://medium.com/swlh/deploy-container-in-ecs-fargate-behind-api-gateway-nlb-for-secure-optimal-accessibility-with-95542d5867c3
+
+
+npm run cdk deploy memory-server-vpce-dev-test --verbose --require-approval never

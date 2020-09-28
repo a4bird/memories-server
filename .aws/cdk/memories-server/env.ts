@@ -51,6 +51,7 @@ const env: CdkVariables = {
     REPOSITORY: process.env.AWS_TAG_REPOSITORY!,
   },
   awsCdkStackId: process.env.AWS_CDK_STACK_ID || 'memory-server',
+  
   awsCertificateArn: process.env.AWS_CERTIFICATE_ARN!,
   awsEcrRepositoryArn: process.env.AWS_ECR_REPO_ARN || '',
   awsFargateClusterName: process.env.AWS_FARGATE_CLUSTER_NAME,

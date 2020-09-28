@@ -99,8 +99,21 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
           role-duration-seconds: 1200
 
-      - name: Deploy to ap-southeast-2
-        id: cdk-deploy
+
+      - name: Deploy Vpce to ap-southeast-2
+        id: cdk-vpce-deploy
+        env:
+          ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
+          SLUG: ${{ needs.setup.outputs.slug }}
+          AWS_TAG_REPOSITORY: ${{ github.repository }}
+          AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
+          AWS_CDK_DEPLOY_REGION: ap-southeast-2
+          AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
+        run: |
+          npm run cdk deploy memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} --verbose --require-approval never
+
+      - name: Deploy Server to ap-southeast-2
+        id: cdk-server-deploy
         env:
           ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
           SLUG: ${{ needs.setup.outputs.slug }}
@@ -108,6 +121,7 @@ jobs:
           AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
           AWS_CDK_DEPLOY_REGION: ap-southeast-2
           AWS_CDK_STACK_ID: memory-server-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
+          AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
           AWS_CERTIFICATE_ARN: arn:aws:acm:${{ env.AWS_PRIMARY_REGION }}:${{ steps.login-aws.outputs.aws-account-id }}:certificate/${{ secrets.AWS_CERTIFICATE_ID }}
           AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.AWS_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
           AWS_FARGATE_SERVICE_NAME: ${{ needs.setup.outputs.slug }}
@@ -124,6 +138,19 @@ jobs:
           CONTAINER_APOLLO_GRAPH_VARIANT: ${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
           CONTAINER_APOLLO_SERVER_USER_VERSION: ${{ github.event.deployment.payload.docker_tag }}
         run: |
-          npm run cdk-deploy
+          npm run cdk deploy memory-server-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} --verbose --require-approval never
           echo ::set-output name=url::https://${AWS_ROUTE53_SUBDOMAIN}.${AWS_ROUTE53_DOMAIN}
+
+
+      - name: teardown Vpce stack in ap-southeast-2
+        id: cdk-vpce-teardown
+        env:
+          ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
+          SLUG: ${{ needs.setup.outputs.slug }}
+          AWS_TAG_REPOSITORY: ${{ github.repository }}
+          AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
+          AWS_CDK_DEPLOY_REGION: ap-southeast-2
+          AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
+        run: |
+          npm run cdk destroy memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} --verbose --force
           
