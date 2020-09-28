@@ -2,7 +2,7 @@ import * as bcrypt from 'bcryptjs';
 import * as yup from 'yup';
 import jwt from 'jsonwebtoken';
 
-import { secret, expiration } from '../../env';
+import env from '../../env';
 import { UserAccount } from '../../entities/userAccount';
 import { MutationLoginArgs, MutationRegisterArgs } from '../../types/graphql';
 import {
@@ -75,8 +75,8 @@ const resolvers = {
         };
       }
 
-      const authToken = jwt.sign(email, secret);
-      res.cookie('authToken', authToken, { maxAge: expiration });
+      const authToken = jwt.sign(email, env.secret);
+      res.cookie('authToken', authToken, { maxAge: env.expiration });
 
       // TODO: Alternate to redis
       // if (req.sessionID) {

@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.branch-slug.outputs.branch }}
-      slug: ${{ steps.branch-slug.outputs.slug }}      
+      slug: ${{ steps.branch-slug.outputs.slug }}
       docker-tag: ${{ github.sha }}
     steps:
       - name: Create Slug
@@ -98,7 +98,7 @@ jobs:
             previews: 
               - ant-man
           ref: ${{ github.ref }}
-          environment: "Development"
+          environment: "development"
           auto_merge: false
           required_contexts: "[]"
           production_environment: false

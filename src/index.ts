@@ -3,18 +3,20 @@ import { ApolloServer } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 
 import { app } from './app';
-import { secret, origin } from './env';
+import env from './env';
 import schema from './schema';
 import { createTypeormConn } from './utils/createTypeormConn';
 import { UserAccount } from './entities/userAccount';
 
 export const startServer = async () => {
   const server = new ApolloServer({
+    introspection: env.apollo.introspectionEnabled,
+    playground: env.apollo.playgroundEnabled,
     schema,
     context: async ({ req, res }: any) => {
       let currentUser;
       if (req.cookies.authToken) {
-        const email = jwt.verify(req.cookies.authToken, secret) as string;
+        const email = jwt.verify(req.cookies.authToken, env.secret) as string;
         if (email) {
           currentUser = await UserAccount.findOne({
             where: { email },

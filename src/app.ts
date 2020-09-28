@@ -1,7 +1,7 @@
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import { origin } from './env';
+import env from './env';
 
 export const app = express();
 
