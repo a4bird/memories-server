@@ -35,10 +35,10 @@ export class MemoriesServerStack extends cdk.Stack {
     const rdsSecurityGroupId = cdk.Fn.importValue(
       `memories-db-${envSuffix}-${resourceSuffix}::rdsSGId`
     );
-  
+
     const rdsSg = SecurityGroup.fromSecurityGroupId(
       this,
-      "Rds Security Group Id",
+      'Rds Security Group Id',
       rdsSecurityGroupId
     );
 
@@ -47,24 +47,25 @@ export class MemoriesServerStack extends cdk.Stack {
     const loadBalancer = alb.createApplicationLoadBalancer(this, {
       alarmAction: alarmAction,
       vpc,
-      albSg
+      albSg,
     });
 
     const secret = secrets.getDbSecret(this, {
       resourceSuffix: resourceSuffix,
-      envSuffix: envSuffix
+      envSuffix: envSuffix,
     });
 
     const dbUsername = secret.secretValueFromJson('username').toString();
-    const dbUserPassword= secret.secretValueFromJson('password').toString();
-    const dbHost= secret.secretValueFromJson('host').toString();
+    const dbUserPassword = secret.secretValueFromJson('password').toString();
+    const dbHost = secret.secretValueFromJson('host').toString();
 
-
-    const appEnvironmentVariables = {...props.appEnvironmentVariables, 
+    const appEnvironmentVariables = {
+      ...props.appEnvironmentVariables,
       ['DB_USERNAME']: dbUsername,
       ['DB_PASSWORD']: dbUserPassword,
       ['DB_HOST']: dbHost,
-    }
+      ['DB_NAME']: 'MemoriesDb', // TODO put in secret
+    };
 
     const fargateService = createFargateService(this, {
       alarmAction: alarmAction, // TODO Setting up Alarms

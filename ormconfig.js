@@ -7,7 +7,7 @@ module.exports = [{
   "port": 3306,
   "username": "root",
   "password": "Password1",
-  "database": process.env.DB_NAME || "MemoriesDB",
+  "database": process.env.DB_NAME || "MemoriesDb",
   "synchronize": true,
   "logging": true,
   "entities": ["src/entities/*.*"]
