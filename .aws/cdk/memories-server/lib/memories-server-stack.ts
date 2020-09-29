@@ -57,14 +57,15 @@ export class MemoriesServerStack extends cdk.Stack {
 
     const dbUsername = secret.secretValueFromJson('username').toString();
     const dbUserPassword = secret.secretValueFromJson('password').toString();
-    const dbHost = secret.secretValueFromJson('host').toString();
+    const dbHost = secret.secretValueFromJson('server').toString();
+    const dbName = secret.secretValueFromJson('database').toString();
 
     const appEnvironmentVariables = {
       ...props.appEnvironmentVariables,
       ['DB_USERNAME']: dbUsername,
       ['DB_PASSWORD']: dbUserPassword,
       ['DB_HOST']: dbHost,
-      ['DB_NAME']: 'MemoriesDb', // TODO put in secret
+      ['DB_NAME']: dbName, // TODO put in secret
     };
 
     const fargateService = createFargateService(this, {
