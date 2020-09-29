@@ -10,8 +10,8 @@ env:
   AWS_PRIMARY_REGION: ap-southeast-2
   AWS_ROLE_TO_ASSUME: arn:aws:iam::${{ secrets.AWS_ACCOUNT_NUMBER }}:role/admin
   AWS_ECR_REPO_NAME: memories-server
-  ENV_SUFFIX: "dev"
-  PREV_ENV: ""
+  ENV_SUFFIX: 'dev'
+  PREV_ENV: ''
 
 jobs:
   setup:
@@ -86,7 +86,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: "${{ env.NODE_VERSION }}"
+          node-version: '${{ env.NODE_VERSION }}'
 
       - name: Install Dependencies
         run: npm run cdk-install
@@ -146,16 +146,16 @@ jobs:
           npm run cdk deploy memory-server-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} -- --verbose --require-approval never
           echo ::set-output name=url::https://${AWS_ROUTE53_SUBDOMAIN}.${AWS_ROUTE53_DOMAIN}
 
-      - name: teardown Vpce stack in ap-southeast-2
-        id: cdk-vpce-teardown
-        working-directory: .aws/cdk/memories-server
-        env:
-          ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
-          SLUG: ${{ needs.setup.outputs.slug }}
-          AWS_TAG_REPOSITORY: ${{ github.repository }}
-          AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
-          AWS_CDK_DEPLOY_REGION: ap-southeast-2
-          AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
-          AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.AWS_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
-        run: |
-          npm run cdk destroy memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} -- --verbose --force
+      # - name: teardown Vpce stack in ap-southeast-2
+      #   id: cdk-vpce-teardown
+      #   working-directory: .aws/cdk/memories-server
+      #   env:
+      #     ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
+      #     SLUG: ${{ needs.setup.outputs.slug }}
+      #     AWS_TAG_REPOSITORY: ${{ github.repository }}
+      #     AWS_CDK_DEPLOY_ACCOUNT: ${{ steps.login-aws.outputs.aws-account-id }}
+      #     AWS_CDK_DEPLOY_REGION: ap-southeast-2
+      #     AWS_CDK_VPCE_STACK_ID: memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
+      #     AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.AWS_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
+      #   run: |
+      #     npm run cdk destroy memory-server-vpce-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }} -- --verbose --force
