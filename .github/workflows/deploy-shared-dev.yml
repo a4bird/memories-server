@@ -9,9 +9,9 @@ env:
   AWS_PRIMARY_REGION: ap-southeast-2
   AWS_ROLE_TO_ASSUME: arn:aws:iam::${{ secrets.AWS_ACCOUNT_NUMBER }}:role/admin
   AWS_ECR_REPO_NAME: memories-server
-  ENV_SUFFIX: "dev"
-  ENVIRONMENT: "development"
-  PREV_ENV: ""
+  ENV_SUFFIX: 'dev'
+  ENVIRONMENT: 'development'
+  PREV_ENV: ''
 
 jobs:
   setup:
@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Dependencies
-        working-directory: .aws/cdk/memories-db
+        working-directory: .aws/cdk/memories-shared
         run: npm install
 
       - name: Configure AWS credentials
