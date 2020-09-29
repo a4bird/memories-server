@@ -1,0 +1,72 @@
+name: Deploy Shared Stack
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT: a4bird-memories
+  AWS_ACCOUNT_NUMBER: ${{ secrets.AWS_ACCOUNT_NUMBER }}
+  AWS_PRIMARY_REGION: ap-southeast-2
+  AWS_ROLE_TO_ASSUME: arn:aws:iam::${{ secrets.AWS_ACCOUNT_NUMBER }}:role/admin
+  AWS_ECR_REPO_NAME: memories-server
+  ENV_SUFFIX: "dev"
+  ENVIRONMENT: "development"
+  PREV_ENV: ""
+
+jobs:
+  setup:
+    name: Setup Variables
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.branch-slug.outputs.branch }}
+      slug: ${{ steps.branch-slug.outputs.slug }}
+    steps:
+      - name: Create Slug
+        id: branch-slug
+        run: |
+          branch_ref=${GITHUB_REF#refs/heads/}
+          branch="${GITHUB_HEAD_REF:-$branch_ref}"
+          slug="${branch//\//-}"
+          echo ::set-output name=branch::${branch}
+          echo ::set-output name=slug::${slug,,}
+      - name: Display branch slug output
+        id: branch-slug-output
+        run: |
+          echo "branch is ${branch}"
+          echo "slug is ${slug}"
+        env:
+          branch: ${{steps.branch-slug.outputs.branch}}
+          slug: ${{steps.branch-slug.outputs.slug}}
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [setup]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        working-directory: .aws/cdk/memories-db
+        run: npm install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        id: login-aws
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_PRIMARY_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          role-duration-seconds: 1200
+
+      - name: Deploy Db to ap-southeast-2
+        id: cdk-deploy
+        working-directory: .aws/scripts
+        env:
+          AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT_NUMBER }}
+          AWS_REGION: ${{ env.AWS_PRIMARY_REGION }}
+          ENVIRONMENT: ${{ env.ENVIRONMENT }}
+          ENV_SUFFIX: ${{ env.ENV_SUFFIX }}
+          SLUG: ${{ needs.setup.outputs.slug }}
+        run: bash ./deploy-shared.sh

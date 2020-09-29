@@ -43,38 +43,38 @@ jobs:
     runs-on: ubuntu-latest
     needs: [setup]
     steps:
-      - name: Set environment variables for staging
-        if: github.event.deployment.environment == 'staging'
-        run: |
-          echo "::set-env name=PREV_ENV::development"
-          echo "::set-env name=ENV_SUFFIX::stg"
+      # - name: Set environment variables for staging
+      #   if: github.event.deployment.environment == 'staging'
+      #   run: |
+      #     echo "::set-env name=PREV_ENV::development"
+      #     echo "::set-env name=ENV_SUFFIX::stg"
 
-      - name: Set environment variables for Production
-        if: github.event.deployment.environment == 'production'
-        run: |
-          echo "::set-env name=PREV_ENV::staging"
-          echo "::set-env name=ENV_SUFFIX::prod"
+      # - name: Set environment variables for Production
+      #   if: github.event.deployment.environment == 'production'
+      #   run: |
+      #     echo "::set-env name=PREV_ENV::staging"
+      #     echo "::set-env name=ENV_SUFFIX::prod"
 
-      - name: Get deployments from the preceding environment
-        if: env.PREV_ENV != ''
-        id: check_previous_stage
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/:repository/deployments?sha=:sha&environment=:environment
-          repository: ${{ github.repository }}
-          sha: ${{ github.sha }}
-          environment: ${{ env.PREV_ENV }}
-          mediaType: |
-            previews:
-              - ant-man
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Get deployments from the preceding environment
+      #   if: env.PREV_ENV != ''
+      #   id: check_previous_stage
+      #   uses: octokit/request-action@v2.x
+      #   with:
+      #     route: GET /repos/:repository/deployments?sha=:sha&environment=:environment
+      #     repository: ${{ github.repository }}
+      #     sha: ${{ github.sha }}
+      #     environment: ${{ env.PREV_ENV }}
+      #     mediaType: |
+      #       previews:
+      #         - ant-man
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check previous deployments
-        if: env.PREV_ENV != '' && steps.check_previous_stage.outputs.data == '[]'
-        run: |
-          echo "::error ::Must deploy to ${{ env.PREV_ENV }} environment before ${{ github.event.deployment.environment}}"
-          exit 1
+      # - name: Check previous deployments
+      #   if: env.PREV_ENV != '' && steps.check_previous_stage.outputs.data == '[]'
+      #   run: |
+      #     echo "::error ::Must deploy to ${{ env.PREV_ENV }} environment before ${{ github.event.deployment.environment}}"
+      #     exit 1
 
       - name: Fetch docker build tag
         run: |
