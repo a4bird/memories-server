@@ -35,7 +35,7 @@ export const startServer = async () => {
     app,
     path: '/graphql',
     // TODO Cors
-    cors: { credentials: true, origin },
+    cors: { credentials: true, origin: env.origin },
   });
 
   await createTypeormConn();
