@@ -30,7 +30,7 @@ export default class RdsInstance extends Construct {
     const dbCluster = this.createDbCluster(dbSubnetGroup);
 
     let schedule = 'sydney-office-hours-stop-start';
-    if (this.environment === 'Production') {
+    if (this.environment === 'production') {
       schedule = 'running';
     } else if (!!this.resourceSuffix) {
       schedule = 'sydney-office-hours-stop-only';
@@ -51,7 +51,7 @@ export default class RdsInstance extends Construct {
   private createDbCluster(dbSubnetGroup: CfnDBSubnetGroup): CfnDBCluster {
     const password = new dbPassword(this, 'MasterPassword');
     const dbClusterParamGroup = this.createDbClusterParamGroup();
-    const isDev = this.environment !== 'Production';
+    const isDev = this.environment !== 'production';
 
     const dbCluster = new CfnDBCluster(
       this,
