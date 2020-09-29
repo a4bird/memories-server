@@ -57,7 +57,9 @@ export default class RdsInstance extends Construct {
       this,
       `memories-api-dbCluster-${this.envSuffix}-${this.resourceSuffix}`,
       {
-        databaseName: `MemoriesDb`,
+        databaseName: password.secret
+          .secretValueFromJson('database')
+          .toString(),
         dbClusterIdentifier: `memories-db-cluster-${this.envSuffix}-${this.resourceSuffix}`,
         dbClusterParameterGroupName: dbClusterParamGroup.ref,
         engineMode: 'serverless',
