@@ -19,7 +19,8 @@
         "-r",
         "dotenv/config"
       ],
-      "restart": true
+      "restart": true,
+      "envFile": "${workspaceFolder}/.env"
     },
     {
       "type": "node",

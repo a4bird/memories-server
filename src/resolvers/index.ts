@@ -1,7 +1,6 @@
-// ./graphql/resolvers/index.js
 import { mergeResolvers } from '@graphql-tools/merge';
 
-import userAccountResolver from './userAccount/resolvers';
+import userAccountResolver from './userAccount';
 import voidScalarResolver from './scalars/void';
 
 const resolvers = [userAccountResolver, voidScalarResolver];

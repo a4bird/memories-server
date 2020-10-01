@@ -3,16 +3,19 @@ import { ApolloServer } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 
 import { app } from './app';
-import env from './env';
-import schema from './schema';
+import typeDefs from 'src/schema';
+import resolvers from 'src/resolvers';
+
+import env from 'src/env';
 import { createTypeormConn } from './utils/createTypeormConn';
 import { UserAccount } from './entities/userAccount';
 
 export const startServer = async () => {
   const server = new ApolloServer({
+    resolvers,
+    typeDefs,
     introspection: env.apollo.introspectionEnabled,
     playground: env.apollo.playgroundEnabled,
-    schema,
     context: async ({ req, res }: any) => {
       let currentUser;
       if (req.cookies.authToken) {
@@ -30,20 +33,42 @@ export const startServer = async () => {
         currentUser,
       };
     },
+    // engine: {
+    //   reportSchema: env.apollo.reportSchema,
+    // },
   });
+
   server.applyMiddleware({
     app,
     path: '/graphql',
-    // TODO Cors
-    cors: { credentials: true, origin: env.origin },
+    cors: {
+      credentials: true,
+      origin: (origin, callback) => {
+        const whitelist = [
+          `http://localhost:${env.port}`,
+          `${env.origin}`,
+          `/\.a4brd\.tk$/`,
+        ];
+
+        if (!origin) {
+          callback(null, true);
+          return;
+        }
+
+        if (whitelist.indexOf(origin) !== -1) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+    },
   });
 
   await createTypeormConn();
-  const port = process.env.PORT || 4000;
 
-  app.listen(port, () => {
-    const url = `http://localhost:${port}`;
-    console.log(`🚀 Server is listening on ${url}/graphql`);
+  app.listen(env.port, () => {
+    const url = `http://localhost:${env.port}`;
+    console.log(`🚀  server ready at ${url}${server.graphqlPath}.`);
     console.log(
       `Try your health check at: ${url}/.well-known/apollo/server-health`
     );

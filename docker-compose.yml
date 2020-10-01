@@ -20,7 +20,7 @@ services:
     depends_on:
       - db
     environment:
-      NODE_ENV: local
+      NODE_ENV: docker
       JWT_SECRET: qowiueojwojfalksdjoqiwueo
       DB_HOST: db
     ports:

@@ -1,13 +1,25 @@
 
 
-module.exports = [{
+module.exports = [
+  {
+    "name": "docker",
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3303,
+    "username": "root",
+    "password": "Password1",
+    "database": process.env.DB_NAME || "MemoriesDB",
+    "synchronize": true,
+    "logging": true,
+    "entities": ["src/entities/*.*"]
+  },{
   "name": "local",
   "type": "mysql",
   "host": "localhost",
   "port": 3306,
   "username": "root",
   "password": "Password1",
-  "database": process.env.DB_NAME || "MemoriesDb",
+  "database": process.env.DB_NAME || "MemoriesDB",
   "synchronize": true,
   "logging": true,
   "entities": ["src/entities/*.*"]
