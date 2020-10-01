@@ -44,11 +44,11 @@ export const startServer = async () => {
     cors: {
       credentials: true,
       origin: (origin, callback) => {
-        const whitelist = [
-          `http://localhost:${env.port}`,
-          `${env.origin}`,
-          `/\.a4brd\.tk$/`,
-        ];
+        const whitelist = [`http://localhost:${env.port}`, `/\.a4brd\.tk$/`];
+
+        if (env.origin) {
+          whitelist.push(`${env.origin}`);
+        }
 
         if (!origin) {
           callback(null, true);
