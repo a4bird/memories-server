@@ -9,6 +9,7 @@ import resolvers from 'src/resolvers';
 import env from 'src/env';
 import { createTypeormConn } from './utils/createTypeormConn';
 import { UserAccount } from './entities/userAccount';
+import { MyContext } from './types/context';
 
 export const startServer = async () => {
   const server = new ApolloServer({
@@ -16,21 +17,16 @@ export const startServer = async () => {
     typeDefs,
     introspection: env.apollo.introspectionEnabled,
     playground: env.apollo.playgroundEnabled,
-    context: async ({ req, res }: any) => {
-      let currentUser;
+    context: async ({ req, res }): Promise<MyContext> => {
+      let email: string | undefined = undefined;
       if (req.cookies.authToken) {
-        const email = jwt.verify(req.cookies.authToken, env.secret) as string;
-        if (email) {
-          currentUser = await UserAccount.findOne({
-            where: { email },
-          });
-        }
+        email = jwt.verify(req.cookies.authToken, env.secret) as string;
       }
 
       return {
         req,
         res,
-        currentUser,
+        loggedInUserEmail: email,
       };
     },
     // engine: {

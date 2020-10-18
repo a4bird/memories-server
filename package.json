@@ -15,7 +15,8 @@
     "cdk-synth": "cd .aws/cdk/memories-server && npm run cdk-synth",
     "test": "jest",
     "codegen": "graphql-codegen",
-    "format": "prettier \"**/*.ts\" --write"
+    "format": "prettier \"**/*.ts\" --write",
+    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
   },
   "_moduleAliases": {
     "src": "."

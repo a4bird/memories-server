@@ -1,0 +1,47 @@
+# import Error from "./shared.graphql"
+# import Void from "./shared.graphql"
+
+"""
+Gender Enum
+"""
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  NA
+}
+
+"""
+User Profile
+"""
+type UserProfile {
+  """
+  Id
+  """
+  id: Int!
+  """
+  First Name
+  """
+  firstName: String!
+  """
+  Last Name
+  """
+  lastName: String!
+  """
+  Gender
+  """
+  gender: Gender!
+}
+
+type UserProfileOutput {
+  userProfile: UserProfile
+  errors: [Error!]
+}
+
+type Mutation {
+  saveProfile(
+    firstName: String!
+    lastName: String!
+    gender: Gender!
+  ): UserProfileOutput
+}

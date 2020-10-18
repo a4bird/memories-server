@@ -1,0 +1,20 @@
+-- Issue 1
+## Create Migration
+
+https://github.com/typeorm/typeorm/issues/5087
+
+npx typeorm migration:create -n addTable_userProfile -c local -- This might not work module error
+
+# Make sure to run it with ts-node and hence having typeorm script defined in packages
+
+- npm run typeorm migration:generate -- -n addTable_userProfile -c local
+
+- npm run typeorm migration:revert -- -c local
+
+-- Issue 2
+
+https://github.com/nestjs/nest/issues/4283
+
+
+-- Issue 3 - Run Migrations programatically
+https://github.com/typeorm/typeorm/issues/3040

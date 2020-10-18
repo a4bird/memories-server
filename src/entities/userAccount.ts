@@ -5,7 +5,10 @@ import {
   BaseEntity,
   PrimaryGeneratedColumn,
   BeforeInsert,
+  JoinColumn,
+  OneToOne,
 } from 'typeorm';
+import { UserProfile } from './userProfile';
 
 @Entity()
 export class UserAccount extends BaseEntity {
@@ -23,6 +26,12 @@ export class UserAccount extends BaseEntity {
 
   @Column('bool', { default: false })
   forgotPasswordLocked: boolean;
+
+  @OneToOne((type) => UserProfile, {
+    cascade: true,
+  })
+  @JoinColumn()
+  profile: UserProfile;
 
   @BeforeInsert()
   async hashPassword() {

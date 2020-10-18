@@ -14,7 +14,7 @@ import {
   emailNotLongEnough,
   invalidEmail,
   duplicateEmail,
-  registerPasswordValidation,
+  passwordNotLongEnough,
 } from './errorMessages/register';
 import { formatYupError } from '../../utils/formatYupError';
 import { MyContext } from '../../types/context';
@@ -28,7 +28,7 @@ const errorResponse = [
 
 const schema = yup.object().shape({
   email: yup.string().min(3, emailNotLongEnough).max(255).email(invalidEmail),
-  password: registerPasswordValidation,
+  password: yup.string().min(3, passwordNotLongEnough).max(255),
 });
 
 const resolvers = {
@@ -130,14 +130,20 @@ const resolvers = {
         userAccount: user,
       };
     },
-    logout: async (_: any, __: any, { res, currentUser }: MyContext) => {
-      if (currentUser) {
+    logout: async (_: any, __: any, { res, loggedInUserEmail }: MyContext) => {
+      if (loggedInUserEmail) {
         res.clearCookie('authToken');
       }
     },
   },
   Query: {
-    me: async (_: any, __: any, { currentUser }: MyContext) => {
+    me: async (_: any, __: any, { loggedInUserEmail }: MyContext) => {
+      let currentUser: UserAccount | undefined;
+      if (loggedInUserEmail) {
+        currentUser = await UserAccount.findOne({
+          where: { email: loggedInUserEmail },
+        });
+      }
       return currentUser || null;
     },
   },
