@@ -18,6 +18,22 @@ import {
 } from './errorMessages/register';
 import { formatYupError } from '../../utils/formatYupError';
 import { MyContext } from '../../types/context';
+import userProfile from './userProfile';
+
+export interface UserAccountResolverOutput {
+  id: string;
+  email: string;
+  /**
+   * Data to pass to child resolvers. Fields here will not show in the response
+   */
+  resolverData: {
+    profileId?: number;
+  };
+}
+
+interface MeOutput {
+  userAccount?: UserAccountResolverOutput;
+}
 
 const errorResponse = [
   {
@@ -30,6 +46,18 @@ const schema = yup.object().shape({
   email: yup.string().min(3, emailNotLongEnough).max(255).email(invalidEmail),
   password: yup.string().min(3, passwordNotLongEnough).max(255),
 });
+
+const mapUserAccount = (
+  userAccount: UserAccount
+): UserAccountResolverOutput => {
+  return {
+    id: userAccount.id,
+    email: userAccount.email,
+    resolverData: {
+      profileId: userAccount.profileId,
+    },
+  };
+};
 
 const resolvers = {
   Mutation: {
@@ -137,15 +165,29 @@ const resolvers = {
     },
   },
   Query: {
-    me: async (_: any, __: any, { loggedInUserEmail }: MyContext) => {
+    me: async (
+      _: any,
+      __: any,
+      { loggedInUserEmail }: MyContext
+    ): Promise<MeOutput> => {
       let currentUser: UserAccount | undefined;
       if (loggedInUserEmail) {
         currentUser = await UserAccount.findOne({
           where: { email: loggedInUserEmail },
         });
       }
-      return currentUser || null;
+
+      if (!currentUser) {
+        return { userAccount: undefined };
+      }
+
+      return {
+        userAccount: mapUserAccount(currentUser),
+      };
     },
+  },
+  UserAccount: {
+    profile: userProfile,
   },
 };
 

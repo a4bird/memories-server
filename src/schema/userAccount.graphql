@@ -1,22 +1,33 @@
 # import Error from "./shared.graphql"
 # import Void from "./shared.graphql"
+# import UserProfile from "./userProfile.graphql"
 
 type UserAccount {
   id: ID!
   email: String!
+  profile: UserProfile
 }
 
-type UserAccountOutput {
+type RegisterOutput {
   userAccount: UserAccount
   errors: [Error!]
 }
 
+type LoginOutput {
+  userAccount: UserAccount
+  errors: [Error!]
+}
+
+type MeOutput {
+  userAccount: UserAccount
+}
+
 type Mutation {
-  login(email: String!, password: String!): UserAccountOutput
-  register(email: String!, password: String!): UserAccountOutput
+  login(email: String!, password: String!): LoginOutput
+  register(email: String!, password: String!): RegisterOutput
   logout: Void
 }
 
 type Query {
-  me: UserAccount
+  me: MeOutput
 }

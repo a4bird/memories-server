@@ -22,26 +22,59 @@ export type Error = {
 export type Query = {
   __typename?: 'Query';
   _dummy?: Maybe<Scalars['Boolean']>;
-  me?: Maybe<UserAccount>;
+  me?: Maybe<MeOutput>;
 };
 
 export type UserAccount = {
   __typename?: 'UserAccount';
   id: Scalars['ID'];
   email: Scalars['String'];
+  profile?: Maybe<UserProfile>;
 };
 
-export type UserAccountOutput = {
-  __typename?: 'UserAccountOutput';
+/** User Profile */
+export type UserProfile = {
+  __typename?: 'UserProfile';
+  /** First Name */
+  firstName: Scalars['String'];
+  /** Gender */
+  gender: Gender;
+  /** Id */
+  id: Scalars['Int'];
+  /** Last Name */
+  lastName: Scalars['String'];
+};
+
+/** Gender Enum */
+export enum Gender {
+  Female = 'FEMALE',
+  Male = 'MALE',
+  Na = 'NA',
+  Other = 'OTHER'
+}
+
+export type RegisterOutput = {
+  __typename?: 'RegisterOutput';
   userAccount?: Maybe<UserAccount>;
   errors?: Maybe<Array<Error>>;
 };
 
+export type LoginOutput = {
+  __typename?: 'LoginOutput';
+  userAccount?: Maybe<UserAccount>;
+  errors?: Maybe<Array<Error>>;
+};
+
+export type MeOutput = {
+  __typename?: 'MeOutput';
+  userAccount?: Maybe<UserAccount>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  login?: Maybe<UserAccountOutput>;
+  login?: Maybe<LoginOutput>;
   logout?: Maybe<Scalars['Void']>;
-  register?: Maybe<UserAccountOutput>;
+  register?: Maybe<RegisterOutput>;
   saveProfile?: Maybe<UserProfileOutput>;
 };
 
@@ -61,27 +94,6 @@ export type MutationRegisterArgs = {
 export type MutationSaveProfileArgs = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
-  gender: Gender;
-};
-
-/** Gender Enum */
-export enum Gender {
-  Male = 'MALE',
-  Female = 'FEMALE',
-  Other = 'OTHER',
-  Na = 'NA'
-}
-
-/** User Profile */
-export type UserProfile = {
-  __typename?: 'UserProfile';
-  /** Id */
-  id: Scalars['Int'];
-  /** First Name */
-  firstName: Scalars['String'];
-  /** Last Name */
-  lastName: Scalars['String'];
-  /** Gender */
   gender: Gender;
 };
 
@@ -176,11 +188,13 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   UserAccount: ResolverTypeWrapper<UserAccount>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  UserAccountOutput: ResolverTypeWrapper<UserAccountOutput>;
-  Mutation: ResolverTypeWrapper<{}>;
-  Gender: Gender;
   UserProfile: ResolverTypeWrapper<UserProfile>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  Gender: Gender;
+  RegisterOutput: ResolverTypeWrapper<RegisterOutput>;
+  LoginOutput: ResolverTypeWrapper<LoginOutput>;
+  MeOutput: ResolverTypeWrapper<MeOutput>;
+  Mutation: ResolverTypeWrapper<{}>;
   UserProfileOutput: ResolverTypeWrapper<UserProfileOutput>;
 };
 
@@ -193,10 +207,12 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   UserAccount: UserAccount;
   ID: Scalars['ID'];
-  UserAccountOutput: UserAccountOutput;
-  Mutation: {};
   UserProfile: UserProfile;
   Int: Scalars['Int'];
+  RegisterOutput: RegisterOutput;
+  LoginOutput: LoginOutput;
+  MeOutput: MeOutput;
+  Mutation: {};
   UserProfileOutput: UserProfileOutput;
 };
 
@@ -212,34 +228,46 @@ export type ErrorResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _dummy?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  me?: Resolver<Maybe<ResolversTypes['UserAccount']>, ParentType, ContextType>;
+  me?: Resolver<Maybe<ResolversTypes['MeOutput']>, ParentType, ContextType>;
 };
 
 export type UserAccountResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserAccount'] = ResolversParentTypes['UserAccount']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  profile?: Resolver<Maybe<ResolversTypes['UserProfile']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type UserAccountOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserAccountOutput'] = ResolversParentTypes['UserAccountOutput']> = {
+export type UserProfileResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserProfile'] = ResolversParentTypes['UserProfile']> = {
+  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  gender?: Resolver<ResolversTypes['Gender'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type RegisterOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['RegisterOutput'] = ResolversParentTypes['RegisterOutput']> = {
   userAccount?: Resolver<Maybe<ResolversTypes['UserAccount']>, ParentType, ContextType>;
   errors?: Resolver<Maybe<Array<ResolversTypes['Error']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  login?: Resolver<Maybe<ResolversTypes['UserAccountOutput']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
-  logout?: Resolver<Maybe<ResolversTypes['Void']>, ParentType, ContextType>;
-  register?: Resolver<Maybe<ResolversTypes['UserAccountOutput']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
-  saveProfile?: Resolver<Maybe<ResolversTypes['UserProfileOutput']>, ParentType, ContextType, RequireFields<MutationSaveProfileArgs, 'firstName' | 'lastName' | 'gender'>>;
+export type LoginOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginOutput'] = ResolversParentTypes['LoginOutput']> = {
+  userAccount?: Resolver<Maybe<ResolversTypes['UserAccount']>, ParentType, ContextType>;
+  errors?: Resolver<Maybe<Array<ResolversTypes['Error']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type UserProfileResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserProfile'] = ResolversParentTypes['UserProfile']> = {
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  gender?: Resolver<ResolversTypes['Gender'], ParentType, ContextType>;
+export type MeOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['MeOutput'] = ResolversParentTypes['MeOutput']> = {
+  userAccount?: Resolver<Maybe<ResolversTypes['UserAccount']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  login?: Resolver<Maybe<ResolversTypes['LoginOutput']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  logout?: Resolver<Maybe<ResolversTypes['Void']>, ParentType, ContextType>;
+  register?: Resolver<Maybe<ResolversTypes['RegisterOutput']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
+  saveProfile?: Resolver<Maybe<ResolversTypes['UserProfileOutput']>, ParentType, ContextType, RequireFields<MutationSaveProfileArgs, 'firstName' | 'lastName' | 'gender'>>;
 };
 
 export type UserProfileOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserProfileOutput'] = ResolversParentTypes['UserProfileOutput']> = {
@@ -253,9 +281,11 @@ export type Resolvers<ContextType = any> = {
   Error?: ErrorResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   UserAccount?: UserAccountResolvers<ContextType>;
-  UserAccountOutput?: UserAccountOutputResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
   UserProfile?: UserProfileResolvers<ContextType>;
+  RegisterOutput?: RegisterOutputResolvers<ContextType>;
+  LoginOutput?: LoginOutputResolvers<ContextType>;
+  MeOutput?: MeOutputResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   UserProfileOutput?: UserProfileOutputResolvers<ContextType>;
 };
 

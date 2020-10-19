@@ -1,0 +1,5 @@
+- Loading entities & relations
+https://stackoverflow.com/questions/57104735/how-to-load-relations-with-tree-entity-with-typeorm
+
+- Fetching relation id
+https://github.com/typeorm/typeorm/issues/156

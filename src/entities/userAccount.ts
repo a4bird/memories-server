@@ -33,6 +33,9 @@ export class UserAccount extends BaseEntity {
   @JoinColumn()
   profile: UserProfile;
 
+  @Column({ nullable: true })
+  profileId?: number;
+
   @BeforeInsert()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, bcrypt.genSaltSync(8));

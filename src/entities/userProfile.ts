@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 
 export enum Gender {
   Male = 'MALE',
@@ -8,7 +8,7 @@ export enum Gender {
 }
 
 @Entity()
-export class UserProfile {
+export class UserProfile extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
