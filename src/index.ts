@@ -8,7 +8,6 @@ import resolvers from 'src/resolvers';
 
 import env from 'src/env';
 import { createTypeormConn } from './utils/createTypeormConn';
-import { UserAccount } from './entities/userAccount';
 import { MyContext } from './types/context';
 
 export const startServer = async () => {
@@ -57,6 +56,9 @@ export const startServer = async () => {
           callback(new Error('Not allowed by CORS'));
         }
       },
+    },
+    bodyParserConfig: {
+      limit: '10mb',
     },
   });
 

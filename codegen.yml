@@ -1,4 +1,7 @@
-schema: ./src/schema/**/*.graphql
+schema:
+  - ./src/schema/**/*.graphql
+  - |
+    scalar Upload
 overwrite: true
 generates:
   ./src/types/graphql.d.ts:
@@ -10,3 +13,4 @@ generates:
         # e.g. Message.createdAt will be of type Date
         Date: Date
         URL: string
+        Upload: Upload

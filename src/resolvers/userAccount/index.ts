@@ -18,7 +18,7 @@ import {
 } from './errorMessages/register';
 import { formatYupError } from '../../utils/formatYupError';
 import { MyContext } from '../../types/context';
-import userProfile from './userProfile';
+import userProfile from '../userProfile/userProfile';
 
 export interface UserAccountResolverOutput {
   id: string;
@@ -106,13 +106,13 @@ const resolvers = {
       const authToken = jwt.sign(email, env.secret);
       res.cookie('authToken', authToken, { maxAge: env.expiration });
 
-      // TODO: Alternate to redis
+      // TODO: Alternate to redis / redis as a task in fargate
       // if (req.sessionID) {
       //   await redis.lpush(`${userSessionIdPrefix}${user.id}`, req.sessionID);
       // }
 
       return {
-        userAccount: user,
+        userAccount: mapUserAccount(user),
       };
     },
     register: async (_: any, args: MutationRegisterArgs) => {

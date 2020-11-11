@@ -3,7 +3,7 @@ import {
   Gender,
   UserProfile as UserProfileEntity,
 } from 'src/entities/userProfile';
-import { UserAccountResolverOutput } from '.';
+import { UserAccountResolverOutput } from '../userAccount';
 import { UserProfile } from 'src/types/graphql';
 
 const mapUserProfile = (

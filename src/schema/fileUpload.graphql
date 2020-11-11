@@ -1,0 +1,13 @@
+"""
+Uploaded File Response
+"""
+type UploadedFileResponse {
+  filename: String!
+  mimetype: String!
+  encoding: String!
+  url: String!
+}
+
+type Mutation {
+  singleUpload(file: Upload!): UploadedFileResponse!
+}
