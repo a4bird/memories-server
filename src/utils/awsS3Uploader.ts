@@ -1,5 +1,8 @@
 import AWS from 'aws-sdk';
 import stream from 'stream';
+import fs from 'fs';
+import path from 'path';
+
 import { File, IUploader, UploadedFileResponse } from 'src/types/fileUpload';
 import { MutationSingleUploadArgs } from 'src/types/graphql';
 
@@ -31,6 +34,18 @@ export class AWSS3Uploader implements IUploader {
     this.config = config;
   }
 
+  private createLocalDestinationFilePath(
+    fileName: string,
+    mimetype: string,
+    encoding: string
+  ): string {
+    const pathName = path.join(
+      path.resolve('.'),
+      `/public/images/${fileName}.png`
+    );
+    return pathName;
+  }
+
   private createDestinationFilePath(
     fileName: string,
     mimetype: string,
@@ -60,28 +75,45 @@ export class AWSS3Uploader implements IUploader {
     const { file } = args;
     const { createReadStream, filename, mimetype, encoding } = await file;
 
-    // Create the destination file path
-    const filePath = this.createDestinationFilePath(
+    const stream = createReadStream();
+
+    const pathName = this.createLocalDestinationFilePath(
       filename,
       mimetype,
       encoding
     );
 
-    // Create an upload stream that goes to S3
-    const uploadStream = this.createUploadStream(filePath);
+    await stream.pipe(fs.createWriteStream(pathName));
 
-    // Pipe the file data into the upload stream
-    const stream = createReadStream();
-    stream!.pipe(uploadStream.writeStream);
+    return {
+      filename,
+      mimetype,
+      encoding,
+      url: `http://localhost:4000/images/${filename}.png`,
+    };
 
-    // Start the stream
-    const result = await uploadStream.promise;
+    // Create the destination file path
+    // const filePath = this.createDestinationFilePath(
+    //   filename,
+    //   mimetype,
+    //   encoding
+    // );
 
-    // Get the link representing the uploaded file
-    const link = result.Location;
+    // // Create an upload stream that goes to S3
+    // const uploadStream = this.createUploadStream(filePath);
 
-    // (optional) save it to our database
+    // // Pipe the file data into the upload stream
 
-    return { filename, mimetype, encoding, url: link };
+    // stream!.pipe(uploadStream.writeStream);
+
+    // // Start the stream
+    // const result = await uploadStream.promise;
+
+    // // Get the link representing the uploaded file
+    // const link = result.Location;
+
+    // // (optional) save it to our database
+
+    // return { filename, mimetype, encoding, url: link };
   }
 }
