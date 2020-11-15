@@ -3,8 +3,16 @@ import stream from 'stream';
 import fs from 'fs';
 import path from 'path';
 
-import { File, IUploader, UploadedFileResponse } from 'src/types/fileUpload';
-import { MutationSingleUploadArgs } from 'src/types/graphql';
+import {
+  File,
+  IUploader,
+  S3PreSignedUrlResponse,
+  UploadedFileResponse,
+} from 'src/types/fileUpload';
+import {
+  MutationS3PreSignedUrlArgs,
+  MutationSingleUploadArgs,
+} from 'src/types/graphql';
 
 type S3UploadConfig = {
   accessKeyId: string;
@@ -41,7 +49,7 @@ export class AWSS3Uploader implements IUploader {
   ): string {
     const pathName = path.join(
       path.resolve('.'),
-      `/public/images/${fileName}.png`
+      `/public/images/${fileName}.jpg`
     );
     return pathName;
   }
@@ -51,7 +59,7 @@ export class AWSS3Uploader implements IUploader {
     mimetype: string,
     encoding: string
   ): string {
-    return fileName;
+    return `/images/profile/${fileName}.jpg`;
   }
 
   private createUploadStream(key: string): S3UploadStream {
@@ -65,6 +73,27 @@ export class AWSS3Uploader implements IUploader {
           Body: pass,
         })
         .promise(),
+    };
+  }
+
+  async s3PreSignedUrlResolver(
+    parent: any,
+    args: MutationS3PreSignedUrlArgs
+  ): Promise<S3PreSignedUrlResponse> {
+    const { filename, filetype } = args;
+    const s3Bucket = this.config.destinationBucketName;
+    const s3Params = {
+      Bucket: s3Bucket,
+      Key: filename,
+      Expires: 60,
+      ContentType: filetype,
+      ACL: 'public-read',
+    };
+    const signedRequest = await this.s3.getSignedUrl('putObject', s3Params);
+    const url = `https://${s3Bucket}.s3.amazonaws.com/${filename}`;
+    return {
+      signedRequest,
+      url,
     };
   }
 

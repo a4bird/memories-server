@@ -8,6 +8,13 @@ type UploadedFileResponse {
   url: String!
 }
 
+type S3PreSignedUrlResponse {
+  signedRequest: String!
+  url: String!
+}
+
 type Mutation {
   singleUpload(file: Upload!): UploadedFileResponse!
+
+  s3PreSignedUrl(filename: String!, filetype: String!): S3PreSignedUrlResponse!
 }
