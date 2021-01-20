@@ -1,0 +1,115 @@
+{
+	"info": {
+		"_postman_id": "b13a60ec-3252-44ae-ad20-879c7bafaf16",
+		"name": "Memories",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Account",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation registerUser(\r\n  $email: String!, \r\n  $password: String!, \r\n){\r\n  register(\r\n   \temail: $email\r\n    password: $password\r\n  ) {\r\n    userAccount{\r\n      id    \r\n    \temail\r\n    }\r\n  }\r\n}\r\n",
+								"variables": "{    \r\n  \"email\": \"aimenwahab.90@gmail.com\",\r\n  \"password\": \"Test@1234\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{APP_BASE_URL}}/graphql",
+							"host": [
+								"{{APP_BASE_URL}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User ",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation loginUser(\r\n  $email: String!, \r\n  $password: String!, \r\n){\r\n  login(email:$email, password:$password){\r\n    userAccount{\r\n      id\r\n      email\r\n      profile {\r\n        firstName\r\n        lastName\r\n      }\r\n    }\r\n  }\r\n}\r\n",
+								"variables": "{    \r\n  \"email\": \"aimenwahab.90@gmail.com\",\r\n  \"password\": \"Test@1234\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{APP_BASE_URL}}/graphql",
+							"host": [
+								"{{APP_BASE_URL}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me Query",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query me {\r\n  me {\r\n    userAccount {\r\n      id\r\n      email\r\n      profile{\r\n        firstName\r\n        lastName\r\n      }\r\n    }    \r\n  }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{APP_BASE_URL}}/graphql",
+							"host": [
+								"{{APP_BASE_URL}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Profile",
+			"item": [
+				{
+					"name": "Save User  Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation saveUserProfile(\r\n   $firstName: String!\r\n   $lastName: String!\r\n   $gender: Gender!\r\n){\r\n  saveProfile(\r\n      firstName:$firstName,\r\n      lastName: $lastName, \r\n      gender: $gender)\r\n      {\r\n        userProfile{\r\n        firstName\r\n        lastName,\r\n    }\r\n  }\r\n}\r\n",
+								"variables": "{    \r\n  \"firstName\": \"Aimen\",\r\n  \"lastName\": \"Wahab\", \r\n  \"gender\": \"FEMALE\"  \r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{APP_BASE_URL}}/graphql",
+							"host": [
+								"{{APP_BASE_URL}}"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
