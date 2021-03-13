@@ -1,17 +1,15 @@
 import AWS from 'aws-sdk';
-import stream from 'stream';
-import fs from 'fs';
-import path from 'path';
+import { MyContext } from 'src/types/context';
 
 import {
-  File,
   IUploader,
-  S3PreSignedUrlResponse,
-  UploadedFileResponse,
+  S3PutPreSignedUrlResponse,
+  S3GetPreSignedUrlResponse,
 } from 'src/types/fileUpload';
+
 import {
-  MutationS3PreSignedUrlArgs,
-  MutationSingleUploadArgs,
+  MutationS3PutPreSignedUrlArgs,
+  MutationS3GetPreSignedUrlArgs,
 } from 'src/types/graphql';
 
 type S3UploadConfig = {
@@ -19,11 +17,6 @@ type S3UploadConfig = {
   secretAccessKey: string;
   destinationBucketName: string;
   region?: string;
-};
-
-type S3UploadStream = {
-  writeStream: stream.PassThrough;
-  promise: Promise<AWS.S3.ManagedUpload.SendData>;
 };
 
 export class AWSS3Uploader implements IUploader {
@@ -38,20 +31,10 @@ export class AWSS3Uploader implements IUploader {
       secretAccessKey: config.secretAccessKey,
     });
 
-    this.s3 = new AWS.S3();
+    this.s3 = new AWS.S3({
+      signatureVersion: 'v4',
+    });
     this.config = config;
-  }
-
-  private createLocalDestinationFilePath(
-    fileName: string,
-    mimetype: string,
-    encoding: string
-  ): string {
-    const pathName = path.join(
-      path.resolve('.'),
-      `/public/images/${fileName}.jpg`
-    );
-    return pathName;
   }
 
   private createDestinationFilePath(
@@ -62,87 +45,54 @@ export class AWSS3Uploader implements IUploader {
     return `/images/profile/${fileName}.jpg`;
   }
 
-  private createUploadStream(key: string): S3UploadStream {
-    const pass = new stream.PassThrough();
-    return {
-      writeStream: pass,
-      promise: this.s3
-        .upload({
-          Bucket: this.config.destinationBucketName,
-          Key: key,
-          Body: pass,
-        })
-        .promise(),
-    };
-  }
-
-  async s3PreSignedUrlResolver(
+  async s3PutPreSignedUrlResolver(
     parent: any,
-    args: MutationS3PreSignedUrlArgs
-  ): Promise<S3PreSignedUrlResponse> {
+    args: MutationS3PutPreSignedUrlArgs,
+    { loggedInUserEmail }: MyContext
+  ): Promise<S3PutPreSignedUrlResponse> {
     const { filename, filetype } = args;
     const s3Bucket = this.config.destinationBucketName;
     const s3Params = {
       Bucket: s3Bucket,
-      Key: filename,
-      Expires: 60,
+      Key: `/images/${loggedInUserEmail}/profile/${filename}`,
+      Expires: 60 * 15,
       ContentType: filetype,
-      ACL: 'public-read',
     };
-    const signedRequest = await this.s3.getSignedUrl('putObject', s3Params);
-    const url = `https://${s3Bucket}.s3.amazonaws.com/${filename}`;
+
+    const signedRequest = await this.s3.getSignedUrlPromise(
+      'putObject',
+      s3Params
+    );
+
+    const url = `https://${s3Bucket}.s3.amazonaws.com/images/${loggedInUserEmail}/profile/${filename}`;
     return {
       signedRequest,
       url,
     };
   }
 
-  async singleFileUploadResolver(
+  async s3GetPreSignedUrlResolver(
     parent: any,
-    args: MutationSingleUploadArgs
-  ): Promise<UploadedFileResponse> {
-    const { file } = args;
-    const { createReadStream, filename, mimetype, encoding } = await file;
-
-    const stream = createReadStream();
-
-    const pathName = this.createLocalDestinationFilePath(
-      filename,
-      mimetype,
-      encoding
-    );
-
-    await stream.pipe(fs.createWriteStream(pathName));
-
-    return {
-      filename,
-      mimetype,
-      encoding,
-      url: `http://localhost:4000/images/${filename}.png`,
+    args: MutationS3GetPreSignedUrlArgs,
+    { loggedInUserEmail }: MyContext
+  ): Promise<S3GetPreSignedUrlResponse> {
+    const { filename } = args;
+    const s3Bucket = this.config.destinationBucketName;
+    const s3Params = {
+      Bucket: s3Bucket,
+      Key: filename,
+      Expires: 60 * 15,
     };
 
-    // Create the destination file path
-    // const filePath = this.createDestinationFilePath(
-    //   filename,
-    //   mimetype,
-    //   encoding
-    // );
+    const signedRequest = await this.s3.getSignedUrlPromise(
+      'getObject',
+      s3Params
+    );
 
-    // // Create an upload stream that goes to S3
-    // const uploadStream = this.createUploadStream(filePath);
-
-    // // Pipe the file data into the upload stream
-
-    // stream!.pipe(uploadStream.writeStream);
-
-    // // Start the stream
-    // const result = await uploadStream.promise;
-
-    // // Get the link representing the uploaded file
-    // const link = result.Location;
-
-    // // (optional) save it to our database
-
-    // return { filename, mimetype, encoding, url: link };
+    const url = `https://${s3Bucket}.s3.amazonaws.com/images/${loggedInUserEmail}/profile/${filename}`;
+    return {
+      signedRequest,
+      url,
+    };
   }
 }

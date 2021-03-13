@@ -8,8 +8,8 @@ const s3Uploader = new AWSS3Uploader({
 
 const resolvers = {
   Mutation: {
-    singleUpload: s3Uploader.singleFileUploadResolver.bind(s3Uploader),
-    s3PreSignedUrl: s3Uploader.s3PreSignedUrlResolver.bind(s3Uploader),
+    s3PutPreSignedUrl: s3Uploader.s3PutPreSignedUrlResolver.bind(s3Uploader),
+    s3GetPreSignedUrl: s3Uploader.s3GetPreSignedUrlResolver.bind(s3Uploader),
   },
 };
 
