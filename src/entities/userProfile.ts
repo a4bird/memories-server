@@ -24,8 +24,4 @@ export class UserProfile extends BaseEntity {
     default: Gender.Na,
   })
   gender!: Gender;
-
-  // TODO: s3Bucket Url for Profile pic
-  // @Column()
-  // photo: string;
 }

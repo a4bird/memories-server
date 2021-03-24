@@ -41,4 +41,6 @@ export interface IUploader {
     args: MutationS3GetPreSignedUrlArgs,
     _ctx: MyContext
   ) => Promise<S3GetPreSignedUrlResponse>;
+
+  s3GetPreSignedUrl: (filename: string) => Promise<string>;
 }

@@ -1,15 +1,6 @@
 # import Error from "./shared.graphql"
 # import Void from "./shared.graphql"
-
-"""
-Gender Enum
-"""
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-  NA
-}
+# import Gender from "./enums/gender.graphql"
 
 """
 User Profile

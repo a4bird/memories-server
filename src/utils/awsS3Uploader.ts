@@ -15,9 +15,10 @@ import {
 type S3UploadConfig = {
   accessKeyId: string;
   secretAccessKey: string;
-  destinationBucketName: string;
   region?: string;
 };
+
+export const BUCKET_NAME = 'my-memories-bucket';
 
 export class AWSS3Uploader implements IUploader {
   private s3: AWS.S3;
@@ -37,34 +38,29 @@ export class AWSS3Uploader implements IUploader {
     this.config = config;
   }
 
-  private createDestinationFilePath(
-    fileName: string,
-    mimetype: string,
-    encoding: string
-  ): string {
-    return `/images/profile/${fileName}.jpg`;
-  }
-
   async s3PutPreSignedUrlResolver(
     parent: any,
     args: MutationS3PutPreSignedUrlArgs,
     { loggedInUserEmail }: MyContext
   ): Promise<S3PutPreSignedUrlResponse> {
     const { filename, filetype } = args;
-    const s3Bucket = this.config.destinationBucketName;
     const s3Params = {
-      Bucket: s3Bucket,
-      Key: `/images/${loggedInUserEmail}/profile/${filename}`,
+      Bucket: BUCKET_NAME,
+      Key: `images/${loggedInUserEmail}/profile/${filename}`,
       Expires: 60 * 15,
       ContentType: filetype,
     };
+
+    if (!loggedInUserEmail) {
+      throw new Error('User not signed in');
+    }
 
     const signedRequest = await this.s3.getSignedUrlPromise(
       'putObject',
       s3Params
     );
 
-    const url = `https://${s3Bucket}.s3.amazonaws.com/images/${loggedInUserEmail}/profile/${filename}`;
+    const url = `https://${BUCKET_NAME}.s3.amazonaws.com/images/${loggedInUserEmail}/profile/${filename}`;
     return {
       signedRequest,
       url,
@@ -77,9 +73,31 @@ export class AWSS3Uploader implements IUploader {
     { loggedInUserEmail }: MyContext
   ): Promise<S3GetPreSignedUrlResponse> {
     const { filename } = args;
-    const s3Bucket = this.config.destinationBucketName;
     const s3Params = {
-      Bucket: s3Bucket,
+      Bucket: BUCKET_NAME,
+      Key: filename,
+      Expires: 60 * 15,
+    };
+
+    if (!loggedInUserEmail) {
+      throw new Error('User not signed in');
+    }
+
+    const signedRequest = await this.s3.getSignedUrlPromise(
+      'getObject',
+      s3Params
+    );
+
+    const url = `https://${BUCKET_NAME}.s3.amazonaws.com/images/${loggedInUserEmail}/profile/${filename}`;
+    return {
+      signedRequest,
+      url,
+    };
+  }
+
+  async s3GetPreSignedUrl(filename: string): Promise<string> {
+    const s3Params = {
+      Bucket: BUCKET_NAME,
       Key: filename,
       Expires: 60 * 15,
     };
@@ -89,10 +107,6 @@ export class AWSS3Uploader implements IUploader {
       s3Params
     );
 
-    const url = `https://${s3Bucket}.s3.amazonaws.com/images/${loggedInUserEmail}/profile/${filename}`;
-    return {
-      signedRequest,
-      url,
-    };
+    return signedRequest;
   }
 }

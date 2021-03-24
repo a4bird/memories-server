@@ -14,6 +14,14 @@ export type Scalars = {
 };
 
 
+/** Gender Enum */
+export enum Gender {
+  Female = 'FEMALE',
+  Male = 'MALE',
+  Na = 'NA',
+  Other = 'OTHER'
+}
+
 /** Uploaded File Response */
 export type UploadedFileResponse = {
   __typename?: 'UploadedFileResponse';
@@ -93,6 +101,7 @@ export type UserAccount = {
   id: Scalars['ID'];
   email: Scalars['String'];
   profile?: Maybe<UserProfile>;
+  photoUrl?: Maybe<Scalars['String']>;
 };
 
 /** User Profile */
@@ -107,14 +116,6 @@ export type UserProfile = {
   /** Last Name */
   lastName: Scalars['String'];
 };
-
-/** Gender Enum */
-export enum Gender {
-  Female = 'FEMALE',
-  Male = 'MALE',
-  Na = 'NA',
-  Other = 'OTHER'
-}
 
 export type RegisterOutput = {
   __typename?: 'RegisterOutput';
@@ -218,6 +219,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Upload: ResolverTypeWrapper<Scalars['Upload']>;
+  Gender: Gender;
   UploadedFileResponse: ResolverTypeWrapper<UploadedFileResponse>;
   String: ResolverTypeWrapper<Scalars['String']>;
   S3PutPreSignedUrlResponse: ResolverTypeWrapper<S3PutPreSignedUrlResponse>;
@@ -231,7 +233,6 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   UserProfile: ResolverTypeWrapper<UserProfile>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Gender: Gender;
   RegisterOutput: ResolverTypeWrapper<RegisterOutput>;
   LoginOutput: ResolverTypeWrapper<LoginOutput>;
   MeOutput: ResolverTypeWrapper<MeOutput>;
@@ -312,6 +313,7 @@ export type UserAccountResolvers<ContextType = any, ParentType extends Resolvers
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   profile?: Resolver<Maybe<ResolversTypes['UserProfile']>, ParentType, ContextType>;
+  photoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

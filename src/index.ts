@@ -66,7 +66,7 @@ export const startServer = async () => {
 
   app.listen(env.port, () => {
     const url = `http://localhost:${env.port}`;
-    console.log(`🚀  server ready at ${url}${server.graphqlPath}.`);
+    console.log(`🚀  server ready at ${url}${server.graphqlPath}`);
     console.log(
       `Try your health check at: ${url}/.well-known/apollo/server-health`
     );

@@ -6,6 +6,7 @@ type UserAccount {
   id: ID!
   email: String!
   profile: UserProfile
+  photoUrl: String
 }
 
 type RegisterOutput {

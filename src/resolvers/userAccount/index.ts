@@ -19,10 +19,12 @@ import {
 import { formatYupError } from '../../utils/formatYupError';
 import { MyContext } from '../../types/context';
 import userProfile from '../userProfile/userProfile';
+import { AWSS3Uploader } from 'src/utils/awsS3Uploader';
 
 export interface UserAccountResolverOutput {
   id: string;
   email: string;
+  photoUrl: string;
   /**
    * Data to pass to child resolvers. Fields here will not show in the response
    */
@@ -47,12 +49,22 @@ const schema = yup.object().shape({
   password: yup.string().min(3, passwordNotLongEnough).max(255),
 });
 
-const mapUserAccount = (
+const mapUserAccount = async (
   userAccount: UserAccount
-): UserAccountResolverOutput => {
+): Promise<UserAccountResolverOutput> => {
+  const s3Uploader = new AWSS3Uploader({
+    accessKeyId: process.env.AWS_ACCESS_KEY!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  });
+
+  const photoUrl = await s3Uploader.s3GetPreSignedUrl(
+    `images/${userAccount.email}/profile/profile-pic`
+  );
+
   return {
     id: userAccount.id,
     email: userAccount.email,
+    photoUrl,
     resolverData: {
       profileId: userAccount.profileId,
     },
@@ -111,8 +123,9 @@ const resolvers = {
       //   await redis.lpush(`${userSessionIdPrefix}${user.id}`, req.sessionID);
       // }
 
+      const userAccount = await mapUserAccount(user);
       return {
-        userAccount: mapUserAccount(user),
+        userAccount,
       };
     },
     register: async (_: any, args: MutationRegisterArgs) => {
@@ -154,8 +167,11 @@ const resolvers = {
       //   );
       //   await sendEmail(email, confirmationLink);
       // }
+
+      const userAccount = await mapUserAccount(user);
+
       return {
-        userAccount: user,
+        userAccount,
       };
     },
     logout: async (_: any, __: any, { res, loggedInUserEmail }: MyContext) => {
@@ -181,8 +197,9 @@ const resolvers = {
         return { userAccount: undefined };
       }
 
+      const userAccount = await mapUserAccount(currentUser);
       return {
-        userAccount: mapUserAccount(currentUser),
+        userAccount,
       };
     },
   },
