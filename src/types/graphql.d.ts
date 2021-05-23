@@ -93,6 +93,7 @@ export type Error = {
 export type Query = {
   __typename?: 'Query';
   _dummy?: Maybe<Scalars['Boolean']>;
+  getUserProfile?: Maybe<UserProfileOutput>;
   me?: Maybe<MeOutput>;
 };
 
@@ -306,6 +307,7 @@ export type ErrorResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _dummy?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  getUserProfile?: Resolver<Maybe<ResolversTypes['UserProfileOutput']>, ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['MeOutput']>, ParentType, ContextType>;
 };
 

@@ -36,3 +36,7 @@ type Mutation {
     gender: Gender!
   ): UserProfileOutput
 }
+
+type Query {
+  getUserProfile: UserProfileOutput
+}

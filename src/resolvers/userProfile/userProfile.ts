@@ -1,12 +1,9 @@
 import { MyContext } from 'src/types/context';
-import {
-  Gender,
-  UserProfile as UserProfileEntity,
-} from 'src/entities/userProfile';
+import { UserProfile as UserProfileEntity } from 'src/entities/userProfile';
 import { UserAccountResolverOutput } from '../userAccount';
 import { UserProfile } from 'src/types/graphql';
 
-const mapUserProfile = (
+export const mapUserProfile = (
   userProfile: UserProfileEntity
 ): Omit<UserProfile, 'id'> => {
   return {

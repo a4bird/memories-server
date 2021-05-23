@@ -10,6 +10,7 @@
     "copy-schemas-linux": "cpx 'src/**/*.graphql' dist",
     "copy-schemas-windows": "cpx src/**/*.graphql dist",
     "build": "tsc --project tsconfig.build.json && npm run copy-schemas-linux",
+    "build-windows": "tsc --project tsconfig.build.json && npm run copy-schemas-windows",
     "start": "ts-node-dev -r dotenv/config -r tsconfig-paths/register src/index",
     "cdk-destroy": "cd .aws/cdk/memories-server && npm run cdk-destroy",
     "cdk-install": "cd .aws/cdk/memories-server && npm install",
@@ -49,8 +50,8 @@
     "prettier": "^2.0.5",
     "ts-jest": "^26.4.4",
     "ts-node": "8.10.2",
-    "ts-node-dev": "^1.0.0",
-    "tsconfig-paths": "^3.9.0",
+    "ts-node-dev": "1.1.6",
+    "tsconfig-paths": "3.9.0",
     "typescript": "3.9.7"
   },
   "dependencies": {
