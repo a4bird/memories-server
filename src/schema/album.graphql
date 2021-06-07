@@ -1,0 +1,65 @@
+"""
+Album
+"""
+type Album {
+  """
+  Id
+  """
+  id: Int!
+  """
+  Album Title
+  """
+  title: String!
+  """
+  Album Description
+  """
+  description: String!
+}
+
+type AlbumOutput {
+ """
+  Id
+  """
+  id: Int!
+  """
+  Album Title
+  """
+  title: String!
+  """
+  Album Description
+  """
+  description: String!
+  """
+  Created At
+  """
+  createdAt: DateTime!
+}
+
+type AddAlbumOutput {
+  album: AlbumOutput
+  errors: [Error!]
+}
+
+type Mutation {
+  addAlbum(
+    title: String!
+    description: String!
+  ): AddAlbumOutput
+}
+
+type GetAlbumOutput {
+  album: AlbumOutput
+  errors: [Error!]
+}
+
+type GetAlbumsOutput {
+  albums: [AlbumOutput!]
+  errors: [Error!]
+}
+
+type Query {
+  getAlbum(title: String!): GetAlbumOutput
+  getAlbums: GetAlbumsOutput
+}
+
+
