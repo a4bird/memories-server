@@ -30,3 +30,4 @@ yarn-error.log*
 /types/graphql.d.ts
 .aws/cdk/memories-shared/env.example
 .aws/cdk/memories-server/env.example.local
+.env
