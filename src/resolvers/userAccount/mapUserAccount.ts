@@ -1,5 +1,5 @@
 import { UserAccount } from 'src/entities/userAccount';
-import { AWSS3Uploader } from 'src/utils/awsS3Uploader';
+import { AWSS3Uploader } from 'src/resolvers/avatarUpload/avatarUploader';
 import { UserAccountResolverOutput } from '.';
 
 export default async (
@@ -10,7 +10,7 @@ export default async (
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   });
 
-  const photoUrl = await s3Uploader.s3GetPreSignedUrl(
+  const photoUrl = await s3Uploader.avatarGetPreSignedUrl(
     `images/${userAccount.email}/profile/profile-pic`
   );
 

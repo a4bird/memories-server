@@ -17,12 +17,3 @@ type S3GetPreSignedUrlResponse {
   signedRequest: String!
   url: String!
 }
-
-type Mutation {
-  s3PutPreSignedUrl(
-    filename: String!
-    filetype: String!
-  ): S3PutPreSignedUrlResponse!
-
-  s3GetPreSignedUrl(filename: String!): S3GetPreSignedUrlResponse!
-}

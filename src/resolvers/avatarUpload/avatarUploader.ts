@@ -1,15 +1,15 @@
 import AWS from 'aws-sdk';
+import { IAvatarUploader } from 'src/types/avatarUploader';
 import { MyContext } from 'src/types/context';
 
 import {
-  IUploader,
   S3PutPreSignedUrlResponse,
   S3GetPreSignedUrlResponse,
 } from 'src/types/fileUpload';
 
 import {
-  MutationS3PutPreSignedUrlArgs,
-  MutationS3GetPreSignedUrlArgs,
+  MutationAvatarPutPreSignedUrlArgs,
+  MutationAvatarGetPreSignedUrlArgs,
 } from 'src/types/graphql';
 
 type S3UploadConfig = {
@@ -20,7 +20,7 @@ type S3UploadConfig = {
 
 export const BUCKET_NAME = 'my-memories-bucket';
 
-export class AWSS3Uploader implements IUploader {
+export class AWSS3Uploader implements IAvatarUploader {
   private s3: AWS.S3;
   public config: S3UploadConfig;
 
@@ -38,9 +38,9 @@ export class AWSS3Uploader implements IUploader {
     this.config = config;
   }
 
-  async s3PutPreSignedUrlResolver(
+  async avatarPutPreSignedUrlResolver(
     parent: any,
-    args: MutationS3PutPreSignedUrlArgs,
+    args: MutationAvatarPutPreSignedUrlArgs,
     { loggedInUserEmail }: MyContext
   ): Promise<S3PutPreSignedUrlResponse> {
     const { filename, filetype } = args;
@@ -67,9 +67,9 @@ export class AWSS3Uploader implements IUploader {
     };
   }
 
-  async s3GetPreSignedUrlResolver(
+  async avatarGetPreSignedUrlResolver(
     parent: any,
-    args: MutationS3GetPreSignedUrlArgs,
+    args: MutationAvatarGetPreSignedUrlArgs,
     { loggedInUserEmail }: MyContext
   ): Promise<S3GetPreSignedUrlResponse> {
     const { filename } = args;
@@ -95,7 +95,7 @@ export class AWSS3Uploader implements IUploader {
     };
   }
 
-  async s3GetPreSignedUrl(filename: string): Promise<string> {
+  async avatarGetPreSignedUrl(filename: string): Promise<string> {
     const s3Params = {
       Bucket: BUCKET_NAME,
       Key: filename,

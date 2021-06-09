@@ -50,11 +50,11 @@ export type AddAlbumOutput = {
 export type Mutation = {
   __typename?: 'Mutation';
   addAlbum?: Maybe<AddAlbumOutput>;
+  avatarGetPreSignedUrl: S3GetPreSignedUrlResponse;
+  avatarPutPreSignedUrl: S3PutPreSignedUrlResponse;
   login?: Maybe<LoginOutput>;
   logout?: Maybe<Scalars['Void']>;
   register?: Maybe<RegisterOutput>;
-  s3GetPreSignedUrl: S3GetPreSignedUrlResponse;
-  s3PutPreSignedUrl: S3PutPreSignedUrlResponse;
   saveProfile?: Maybe<UserProfileOutput>;
 };
 
@@ -62,6 +62,17 @@ export type Mutation = {
 export type MutationAddAlbumArgs = {
   title: Scalars['String'];
   description: Scalars['String'];
+};
+
+
+export type MutationAvatarGetPreSignedUrlArgs = {
+  filename: Scalars['String'];
+};
+
+
+export type MutationAvatarPutPreSignedUrlArgs = {
+  filename: Scalars['String'];
+  filetype: Scalars['String'];
 };
 
 
@@ -74,17 +85,6 @@ export type MutationLoginArgs = {
 export type MutationRegisterArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
-};
-
-
-export type MutationS3GetPreSignedUrlArgs = {
-  filename: Scalars['String'];
-};
-
-
-export type MutationS3PutPreSignedUrlArgs = {
-  filename: Scalars['String'];
-  filetype: Scalars['String'];
 };
 
 
@@ -120,6 +120,18 @@ export type QueryGetAlbumArgs = {
   title: Scalars['String'];
 };
 
+export type S3PutPreSignedUrlResponse = {
+  __typename?: 'S3PutPreSignedUrlResponse';
+  signedRequest: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type S3GetPreSignedUrlResponse = {
+  __typename?: 'S3GetPreSignedUrlResponse';
+  signedRequest: Scalars['String'];
+  url: Scalars['String'];
+};
+
 /** Gender Enum */
 export enum Gender {
   Female = 'FEMALE',
@@ -134,18 +146,6 @@ export type UploadedFileResponse = {
   filename: Scalars['String'];
   mimetype: Scalars['String'];
   encoding: Scalars['String'];
-  url: Scalars['String'];
-};
-
-export type S3PutPreSignedUrlResponse = {
-  __typename?: 'S3PutPreSignedUrlResponse';
-  signedRequest: Scalars['String'];
-  url: Scalars['String'];
-};
-
-export type S3GetPreSignedUrlResponse = {
-  __typename?: 'S3GetPreSignedUrlResponse';
-  signedRequest: Scalars['String'];
   url: Scalars['String'];
 };
 
@@ -291,10 +291,10 @@ export type ResolversTypes = {
   GetAlbumsOutput: ResolverTypeWrapper<GetAlbumsOutput>;
   Query: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Gender: Gender;
-  UploadedFileResponse: ResolverTypeWrapper<UploadedFileResponse>;
   S3PutPreSignedUrlResponse: ResolverTypeWrapper<S3PutPreSignedUrlResponse>;
   S3GetPreSignedUrlResponse: ResolverTypeWrapper<S3GetPreSignedUrlResponse>;
+  Gender: Gender;
+  UploadedFileResponse: ResolverTypeWrapper<UploadedFileResponse>;
   Void: ResolverTypeWrapper<Scalars['Void']>;
   Error: ResolverTypeWrapper<Error>;
   UserAccount: ResolverTypeWrapper<UserAccount>;
@@ -321,9 +321,9 @@ export type ResolversParentTypes = {
   GetAlbumsOutput: GetAlbumsOutput;
   Query: {};
   Boolean: Scalars['Boolean'];
-  UploadedFileResponse: UploadedFileResponse;
   S3PutPreSignedUrlResponse: S3PutPreSignedUrlResponse;
   S3GetPreSignedUrlResponse: S3GetPreSignedUrlResponse;
+  UploadedFileResponse: UploadedFileResponse;
   Void: Scalars['Void'];
   Error: Error;
   UserAccount: UserAccount;
@@ -370,11 +370,11 @@ export type AddAlbumOutputResolvers<ContextType = any, ParentType extends Resolv
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addAlbum?: Resolver<Maybe<ResolversTypes['AddAlbumOutput']>, ParentType, ContextType, RequireFields<MutationAddAlbumArgs, 'title' | 'description'>>;
+  avatarGetPreSignedUrl?: Resolver<ResolversTypes['S3GetPreSignedUrlResponse'], ParentType, ContextType, RequireFields<MutationAvatarGetPreSignedUrlArgs, 'filename'>>;
+  avatarPutPreSignedUrl?: Resolver<ResolversTypes['S3PutPreSignedUrlResponse'], ParentType, ContextType, RequireFields<MutationAvatarPutPreSignedUrlArgs, 'filename' | 'filetype'>>;
   login?: Resolver<Maybe<ResolversTypes['LoginOutput']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   logout?: Resolver<Maybe<ResolversTypes['Void']>, ParentType, ContextType>;
   register?: Resolver<Maybe<ResolversTypes['RegisterOutput']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
-  s3GetPreSignedUrl?: Resolver<ResolversTypes['S3GetPreSignedUrlResponse'], ParentType, ContextType, RequireFields<MutationS3GetPreSignedUrlArgs, 'filename'>>;
-  s3PutPreSignedUrl?: Resolver<ResolversTypes['S3PutPreSignedUrlResponse'], ParentType, ContextType, RequireFields<MutationS3PutPreSignedUrlArgs, 'filename' | 'filetype'>>;
   saveProfile?: Resolver<Maybe<ResolversTypes['UserProfileOutput']>, ParentType, ContextType, RequireFields<MutationSaveProfileArgs, 'firstName' | 'lastName' | 'gender'>>;
 };
 
@@ -398,14 +398,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   me?: Resolver<Maybe<ResolversTypes['MeOutput']>, ParentType, ContextType>;
 };
 
-export type UploadedFileResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UploadedFileResponse'] = ResolversParentTypes['UploadedFileResponse']> = {
-  filename?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  mimetype?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  encoding?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type S3PutPreSignedUrlResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['S3PutPreSignedUrlResponse'] = ResolversParentTypes['S3PutPreSignedUrlResponse']> = {
   signedRequest?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -414,6 +406,14 @@ export type S3PutPreSignedUrlResponseResolvers<ContextType = any, ParentType ext
 
 export type S3GetPreSignedUrlResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['S3GetPreSignedUrlResponse'] = ResolversParentTypes['S3GetPreSignedUrlResponse']> = {
   signedRequest?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UploadedFileResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UploadedFileResponse'] = ResolversParentTypes['UploadedFileResponse']> = {
+  filename?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  mimetype?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  encoding?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -478,9 +478,9 @@ export type Resolvers<ContextType = any> = {
   GetAlbumOutput?: GetAlbumOutputResolvers<ContextType>;
   GetAlbumsOutput?: GetAlbumsOutputResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  UploadedFileResponse?: UploadedFileResponseResolvers<ContextType>;
   S3PutPreSignedUrlResponse?: S3PutPreSignedUrlResponseResolvers<ContextType>;
   S3GetPreSignedUrlResponse?: S3GetPreSignedUrlResponseResolvers<ContextType>;
+  UploadedFileResponse?: UploadedFileResponseResolvers<ContextType>;
   Void?: GraphQLScalarType;
   Error?: ErrorResolvers<ContextType>;
   UserAccount?: UserAccountResolvers<ContextType>;
