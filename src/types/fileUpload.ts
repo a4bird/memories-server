@@ -13,13 +13,3 @@ export type UploadedFileResponse = {
   encoding: string;
   url: string;
 };
-
-export type S3PutPreSignedUrlResponse = {
-  signedRequest: string;
-  url: string;
-};
-
-export type S3GetPreSignedUrlResponse = {
-  signedRequest: string;
-  url: string;
-};

@@ -5,11 +5,11 @@ import { QueryGetAlbumArgs, GetAlbumOutput } from 'src/types/graphql';
 
 export default async (
   _: any,
-  { title }: QueryGetAlbumArgs,
+  { id }: QueryGetAlbumArgs,
   __: MyContext
 ): Promise<GetAlbumOutput> => {
   const album = await Album.findOne({
-    where: { title: title },
+    where: { id: id },
   });
 
   if (!album) {

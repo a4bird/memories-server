@@ -1,6 +1,6 @@
-import { AWSS3Uploader } from 'src/resolvers/avatarUpload/avatarUploader';
+import { AvatarUploader } from 'src/resolvers/avatarUpload/avatarUploader';
 
-const s3Uploader = new AWSS3Uploader({
+const s3Uploader = new AvatarUploader({
   accessKeyId: process.env.AWS_ACCESS_KEY!,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
 });

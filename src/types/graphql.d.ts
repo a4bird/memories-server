@@ -54,6 +54,7 @@ export type Mutation = {
   avatarPutPreSignedUrl: S3PutPreSignedUrlResponse;
   login?: Maybe<LoginOutput>;
   logout?: Maybe<Scalars['Void']>;
+  photoPutPreSignedUrl: S3PutPreSignedUrlResponse;
   register?: Maybe<RegisterOutput>;
   saveProfile?: Maybe<UserProfileOutput>;
 };
@@ -79,6 +80,13 @@ export type MutationAvatarPutPreSignedUrlArgs = {
 export type MutationLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationPhotoPutPreSignedUrlArgs = {
+  albumId: Scalars['Int'];
+  filename: Scalars['String'];
+  filetype: Scalars['String'];
 };
 
 
@@ -117,7 +125,7 @@ export type Query = {
 
 
 export type QueryGetAlbumArgs = {
-  title: Scalars['String'];
+  id: Scalars['Int'];
 };
 
 export type S3PutPreSignedUrlResponse = {
@@ -374,6 +382,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   avatarPutPreSignedUrl?: Resolver<ResolversTypes['S3PutPreSignedUrlResponse'], ParentType, ContextType, RequireFields<MutationAvatarPutPreSignedUrlArgs, 'filename' | 'filetype'>>;
   login?: Resolver<Maybe<ResolversTypes['LoginOutput']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   logout?: Resolver<Maybe<ResolversTypes['Void']>, ParentType, ContextType>;
+  photoPutPreSignedUrl?: Resolver<ResolversTypes['S3PutPreSignedUrlResponse'], ParentType, ContextType, RequireFields<MutationPhotoPutPreSignedUrlArgs, 'albumId' | 'filename' | 'filetype'>>;
   register?: Resolver<Maybe<ResolversTypes['RegisterOutput']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
   saveProfile?: Resolver<Maybe<ResolversTypes['UserProfileOutput']>, ParentType, ContextType, RequireFields<MutationSaveProfileArgs, 'firstName' | 'lastName' | 'gender'>>;
 };
@@ -392,7 +401,7 @@ export type GetAlbumsOutputResolvers<ContextType = any, ParentType extends Resol
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _dummy?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  getAlbum?: Resolver<Maybe<ResolversTypes['GetAlbumOutput']>, ParentType, ContextType, RequireFields<QueryGetAlbumArgs, 'title'>>;
+  getAlbum?: Resolver<Maybe<ResolversTypes['GetAlbumOutput']>, ParentType, ContextType, RequireFields<QueryGetAlbumArgs, 'id'>>;
   getAlbums?: Resolver<Maybe<ResolversTypes['GetAlbumsOutput']>, ParentType, ContextType>;
   getUserProfile?: Resolver<Maybe<ResolversTypes['UserProfileOutput']>, ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['MeOutput']>, ParentType, ContextType>;

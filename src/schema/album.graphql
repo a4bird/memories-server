@@ -58,7 +58,7 @@ type GetAlbumsOutput {
 }
 
 type Query {
-  getAlbum(title: String!): GetAlbumOutput
+  getAlbum(id: Int!): GetAlbumOutput
   getAlbums: GetAlbumsOutput
 }
 

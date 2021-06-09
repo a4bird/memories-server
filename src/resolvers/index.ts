@@ -5,6 +5,7 @@ import userAccountResolver from './userAccount';
 import userProfileResolver from './userProfile';
 import albumResolver from './album';
 import avatarUploadResolver from './avatarUpload';
+import photoUploadResolver from './photoUpload';
 import voidScalarResolver from './scalars/void';
 
 const resolvers = [
@@ -12,6 +13,7 @@ const resolvers = [
   userProfileResolver,
   albumResolver,
   avatarUploadResolver,
+  photoUploadResolver,
   voidScalarResolver,
   graphqlScalarResolvers,
 ];

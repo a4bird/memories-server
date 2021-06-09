@@ -1,15 +1,13 @@
 import AWS from 'aws-sdk';
+import { BUCKET_NAME } from 'src/constants';
 import { IAvatarUploader } from 'src/types/avatarUploader';
 import { MyContext } from 'src/types/context';
 
 import {
-  S3PutPreSignedUrlResponse,
-  S3GetPreSignedUrlResponse,
-} from 'src/types/fileUpload';
-
-import {
   MutationAvatarPutPreSignedUrlArgs,
   MutationAvatarGetPreSignedUrlArgs,
+  S3GetPreSignedUrlResponse,
+  S3PutPreSignedUrlResponse,
 } from 'src/types/graphql';
 
 type S3UploadConfig = {
@@ -18,9 +16,7 @@ type S3UploadConfig = {
   region?: string;
 };
 
-export const BUCKET_NAME = 'my-memories-bucket';
-
-export class AWSS3Uploader implements IAvatarUploader {
+export class AvatarUploader implements IAvatarUploader {
   private s3: AWS.S3;
   public config: S3UploadConfig;
 

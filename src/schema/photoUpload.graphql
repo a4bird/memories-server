@@ -1,0 +1,10 @@
+# import S3PutPreSignedUrlResponse from "./fileUpload.graphql"
+# import S3GetPreSignedUrlResponse from "./fileUpload.graphql"
+
+type Mutation {
+  photoPutPreSignedUrl(
+    albumId: Int!
+    filename: String!
+    filetype: String!
+  ): S3PutPreSignedUrlResponse!
+}
