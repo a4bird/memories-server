@@ -1,4 +1,6 @@
 import AWS from 'aws-sdk';
+import { v4 as uuidv4 } from 'uuid';
+
 import { BUCKET_NAME } from 'src/constants';
 import { Album } from 'src/entities/album';
 import { MyContext } from 'src/types/context';
@@ -50,8 +52,14 @@ export class PhotoUploader implements IPhotoUploader {
 
     // Get Album Name
     const s3Params = {
+      Metadata: {
+        album: album.title,
+        filename: filename,
+        account: loggedInUserEmail,
+        uploadDateUTC: Date(),
+      },
       Bucket: BUCKET_NAME,
-      Key: `images/albums/${album.title}/${filename}`,
+      Key: `images/albums/${album.title}/${uuidv4()}`,
       Expires: 60 * 15,
       ContentType: filetype,
     };
@@ -60,15 +68,19 @@ export class PhotoUploader implements IPhotoUploader {
       throw new Error('User not signed in');
     }
 
-    const signedRequest = await this.s3.getSignedUrlPromise(
-      'putObject',
-      s3Params
-    );
+    try {
+      const signedRequest = await this.s3.getSignedUrlPromise(
+        'putObject',
+        s3Params
+      );
 
-    const url = `https://${BUCKET_NAME}.s3.amazonaws.com/images/albums/${album.title}/${filename}`;
-    return {
-      signedRequest,
-      url,
-    };
+      const url = `https://${BUCKET_NAME}.s3.amazonaws.com/images/albums/${album.title}/${filename}`;
+      return {
+        signedRequest,
+        url,
+      };
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 }
