@@ -56,7 +56,7 @@ export class PhotoUploader implements IPhotoUploader {
         album: album.title,
         filename: filename,
         account: loggedInUserEmail,
-        uploadDateUTC: Date(),
+        uploadDateUTC: new Date().toJSON(),
       },
       Bucket: BUCKET_NAME,
       Key: `images/albums/${album.title}/${uuidv4()}`,
