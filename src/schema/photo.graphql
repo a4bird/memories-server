@@ -1,0 +1,17 @@
+"""
+Photo
+"""
+type Photo {
+  """
+  File name
+  """
+  filename: String!
+  """
+  Created at
+  """
+  createdAt: DateTime!
+  """
+  Url
+  """
+  url: String!
+}

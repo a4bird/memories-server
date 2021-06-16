@@ -1,10 +1,7 @@
-import { invalidLogin } from './errorMessages/login';
-
 import { MyContext } from '../../types/context';
 
 import userProfile from '../userProfile/userProfile';
 import register from './registerMutation';
-import mapUserAccount from './mapUserAccount';
 import loginMutation from './loginMutation';
 import me from './meQuery';
 

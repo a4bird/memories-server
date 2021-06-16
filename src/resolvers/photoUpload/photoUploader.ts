@@ -9,19 +9,14 @@ import {
   MutationPhotoPutPreSignedUrlArgs,
   S3PutPreSignedUrlResponse,
 } from 'src/types/graphql';
+import { CloudConfig } from 'src/types/cloudConfig';
 import { IPhotoUploader } from 'src/types/photoUploader';
-
-type S3UploadConfig = {
-  accessKeyId: string;
-  secretAccessKey: string;
-  region?: string;
-};
 
 export class PhotoUploader implements IPhotoUploader {
   private s3: AWS.S3;
-  public config: S3UploadConfig;
+  public config: CloudConfig;
 
-  constructor(config: S3UploadConfig) {
+  constructor(config: CloudConfig) {
     AWS.config = new AWS.Config();
     AWS.config.update({
       region: config.region || 'ap-southeast-2',

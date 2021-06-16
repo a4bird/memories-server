@@ -1,21 +1,6 @@
 """
-Album
+Album Output
 """
-type Album {
-  """
-  Id
-  """
-  id: Int!
-  """
-  Album Title
-  """
-  title: String!
-  """
-  Album Description
-  """
-  description: String!
-}
-
 type AlbumOutput {
  """
   Id
@@ -33,6 +18,10 @@ type AlbumOutput {
   Created At
   """
   createdAt: DateTime!
+  """
+  Photos
+  """
+  photos: [Photo!]
 }
 
 type AddAlbumOutput {

@@ -18,17 +18,7 @@ export type Scalars = {
 
 
 
-/** Album */
-export type Album = {
-  __typename?: 'Album';
-  /** Id */
-  id: Scalars['Int'];
-  /** Album Title */
-  title: Scalars['String'];
-  /** Album Description */
-  description: Scalars['String'];
-};
-
+/** Album Output */
 export type AlbumOutput = {
   __typename?: 'AlbumOutput';
   /** Id */
@@ -39,6 +29,8 @@ export type AlbumOutput = {
   description: Scalars['String'];
   /** Created At */
   createdAt: Scalars['DateTime'];
+  /** Photos */
+  photos?: Maybe<Array<Photo>>;
 };
 
 export type AddAlbumOutput = {
@@ -154,6 +146,17 @@ export type UploadedFileResponse = {
   filename: Scalars['String'];
   mimetype: Scalars['String'];
   encoding: Scalars['String'];
+  url: Scalars['String'];
+};
+
+/** Photo */
+export type Photo = {
+  __typename?: 'Photo';
+  /** File name */
+  filename: Scalars['String'];
+  /** Created at */
+  createdAt: Scalars['DateTime'];
+  /** Url */
   url: Scalars['String'];
 };
 
@@ -289,10 +292,9 @@ export type ResolversTypes = {
   Upload: ResolverTypeWrapper<Scalars['Upload']>;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
-  Album: ResolverTypeWrapper<Album>;
+  AlbumOutput: ResolverTypeWrapper<AlbumOutput>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  AlbumOutput: ResolverTypeWrapper<AlbumOutput>;
   AddAlbumOutput: ResolverTypeWrapper<AddAlbumOutput>;
   Mutation: ResolverTypeWrapper<{}>;
   GetAlbumOutput: ResolverTypeWrapper<GetAlbumOutput>;
@@ -303,6 +305,7 @@ export type ResolversTypes = {
   S3GetPreSignedUrlResponse: ResolverTypeWrapper<S3GetPreSignedUrlResponse>;
   Gender: Gender;
   UploadedFileResponse: ResolverTypeWrapper<UploadedFileResponse>;
+  Photo: ResolverTypeWrapper<Photo>;
   Void: ResolverTypeWrapper<Scalars['Void']>;
   Error: ResolverTypeWrapper<Error>;
   UserAccount: ResolverTypeWrapper<UserAccount>;
@@ -319,10 +322,9 @@ export type ResolversParentTypes = {
   Upload: Scalars['Upload'];
   Date: Scalars['Date'];
   DateTime: Scalars['DateTime'];
-  Album: Album;
+  AlbumOutput: AlbumOutput;
   Int: Scalars['Int'];
   String: Scalars['String'];
-  AlbumOutput: AlbumOutput;
   AddAlbumOutput: AddAlbumOutput;
   Mutation: {};
   GetAlbumOutput: GetAlbumOutput;
@@ -332,6 +334,7 @@ export type ResolversParentTypes = {
   S3PutPreSignedUrlResponse: S3PutPreSignedUrlResponse;
   S3GetPreSignedUrlResponse: S3GetPreSignedUrlResponse;
   UploadedFileResponse: UploadedFileResponse;
+  Photo: Photo;
   Void: Scalars['Void'];
   Error: Error;
   UserAccount: UserAccount;
@@ -355,18 +358,12 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime';
 }
 
-export type AlbumResolvers<ContextType = any, ParentType extends ResolversParentTypes['Album'] = ResolversParentTypes['Album']> = {
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type AlbumOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['AlbumOutput'] = ResolversParentTypes['AlbumOutput']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  photos?: Resolver<Maybe<Array<ResolversTypes['Photo']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -427,6 +424,13 @@ export type UploadedFileResponseResolvers<ContextType = any, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PhotoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Photo'] = ResolversParentTypes['Photo']> = {
+  filename?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface VoidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Void'], any> {
   name: 'Void';
 }
@@ -480,7 +484,6 @@ export type Resolvers<ContextType = any> = {
   Upload?: GraphQLScalarType;
   Date?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
-  Album?: AlbumResolvers<ContextType>;
   AlbumOutput?: AlbumOutputResolvers<ContextType>;
   AddAlbumOutput?: AddAlbumOutputResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
@@ -490,6 +493,7 @@ export type Resolvers<ContextType = any> = {
   S3PutPreSignedUrlResponse?: S3PutPreSignedUrlResponseResolvers<ContextType>;
   S3GetPreSignedUrlResponse?: S3GetPreSignedUrlResponseResolvers<ContextType>;
   UploadedFileResponse?: UploadedFileResponseResolvers<ContextType>;
+  Photo?: PhotoResolvers<ContextType>;
   Void?: GraphQLScalarType;
   Error?: ErrorResolvers<ContextType>;
   UserAccount?: UserAccountResolvers<ContextType>;

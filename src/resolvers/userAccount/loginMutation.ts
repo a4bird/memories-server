@@ -1,6 +1,5 @@
 import * as bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import * as yup from 'yup';
 
 import env from '../../env';
 import { UserAccount } from '../../entities/userAccount';

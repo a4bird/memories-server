@@ -9,18 +9,12 @@ import {
   S3GetPreSignedUrlResponse,
   S3PutPreSignedUrlResponse,
 } from 'src/types/graphql';
-
-type S3UploadConfig = {
-  accessKeyId: string;
-  secretAccessKey: string;
-  region?: string;
-};
-
+import { CloudConfig } from 'src/types/cloudConfig';
 export class AvatarUploader implements IAvatarUploader {
   private s3: AWS.S3;
-  public config: S3UploadConfig;
+  public config: CloudConfig;
 
-  constructor(config: S3UploadConfig) {
+  constructor(config: CloudConfig) {
     AWS.config = new AWS.Config();
     AWS.config.update({
       region: config.region || 'ap-southeast-2',
