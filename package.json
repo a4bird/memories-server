@@ -57,6 +57,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.18.0",
+    "@aws-sdk/client-s3": "^3.18.0",
+    "@aws-sdk/s3-request-presigner": "^3.18.0",
     "@graphql-tools/load-files": "^6.2.4",
     "@graphql-tools/merge": "^6.2.5",
     "apollo-server": "^2.19.0",

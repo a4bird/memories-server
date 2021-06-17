@@ -4,6 +4,7 @@ import { AlbumOutput } from 'src/types/graphql';
 export type Photo = {
   filename: string;
   url: string;
+  createdAt: Date;
 };
 
 export interface IPhotos {
