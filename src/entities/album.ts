@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  ManyToOne,
+} from 'typeorm';
+import { UserAccount } from './userAccount';
 
 @Entity()
 export class Album extends BaseEntity {
@@ -13,4 +20,10 @@ export class Album extends BaseEntity {
 
   @Column('datetime')
   createdAt: Date;
+
+  @ManyToOne(() => UserAccount)
+  userAccount: UserAccount;
+
+  @PrimaryGeneratedColumn('uuid')
+  userAccountId: string;
 }
