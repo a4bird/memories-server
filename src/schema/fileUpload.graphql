@@ -9,6 +9,7 @@ type UploadedFileResponse {
 }
 
 type S3PutPreSignedUrlResponse {
+  filename: String!
   signedRequest: String!
   url: String!
 }

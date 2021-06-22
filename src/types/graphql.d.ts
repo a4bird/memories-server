@@ -122,6 +122,7 @@ export type QueryGetAlbumArgs = {
 
 export type S3PutPreSignedUrlResponse = {
   __typename?: 'S3PutPreSignedUrlResponse';
+  filename: Scalars['String'];
   signedRequest: Scalars['String'];
   url: Scalars['String'];
 };
@@ -405,6 +406,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type S3PutPreSignedUrlResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['S3PutPreSignedUrlResponse'] = ResolversParentTypes['S3PutPreSignedUrlResponse']> = {
+  filename?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   signedRequest?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

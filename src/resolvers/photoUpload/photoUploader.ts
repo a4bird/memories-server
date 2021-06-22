@@ -11,10 +11,12 @@ import {
 } from 'src/types/graphql';
 import { CloudConfig } from 'src/types/cloudConfig';
 import { IPhotoUploader } from 'src/types/photoUploader';
+import { Photos } from '../photos';
 
 export class PhotoUploader implements IPhotoUploader {
   private s3: AWS.S3;
   public config: CloudConfig;
+  private photos: Photos;
 
   constructor(config: CloudConfig) {
     AWS.config = new AWS.Config();
@@ -23,6 +25,14 @@ export class PhotoUploader implements IPhotoUploader {
       accessKeyId: config.accessKeyId,
       secretAccessKey: config.secretAccessKey,
     });
+
+    this.photos = new Photos(
+      {
+        accessKeyId: config.accessKeyId,
+        secretAccessKey: config.secretAccessKey,
+      },
+      process.env.AWS_DYNAMO_DB_TABLE!
+    );
 
     this.s3 = new AWS.S3({
       signatureVersion: 'v4',
@@ -71,10 +81,12 @@ export class PhotoUploader implements IPhotoUploader {
         s3Params
       );
 
-      const url = `https://${BUCKET_NAME}.s3.amazonaws.com/images/albums/${album.title}/${filename}`;
+      const getSignedUrl = await this.photos.getPreSignedUrl(s3Params.Key);
+
       return {
+        filename: filename,
         signedRequest,
-        url,
+        url: getSignedUrl,
       };
     } catch (e) {
       throw new Error(e);

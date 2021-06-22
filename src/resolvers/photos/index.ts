@@ -26,7 +26,7 @@ export class Photos implements IPhotos {
 
   constructor(config: CloudConfig, tableName: string) {
     const cloudConfig = {
-      region: 'ap-southeast-2',
+      region: config.region || 'ap-southeast-2',
       credentials: {
         accessKeyId: config.accessKeyId,
         secretAccessKey: config.secretAccessKey,
@@ -95,7 +95,7 @@ export class Photos implements IPhotos {
     return photos;
   };
 
-  private async getPreSignedUrl(s3Key: string) {
+  async getPreSignedUrl(s3Key: string) {
     const command = new GetObjectCommand({
       Bucket: BUCKET_NAME,
       Key: s3Key,
