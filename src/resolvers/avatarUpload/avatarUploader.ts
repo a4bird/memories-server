@@ -52,6 +52,7 @@ export class AvatarUploader implements IAvatarUploader {
 
     const url = `https://${BUCKET_NAME}.s3.amazonaws.com/images/${loggedInUserEmail}/profile/${filename}`;
     return {
+      filename: filename,
       signedRequest,
       url,
     };
