@@ -64,7 +64,7 @@ export class PhotoUploader implements IPhotoUploader {
         uploadDateUTC: new Date().toJSON(),
       },
       Bucket: BUCKET_NAME,
-      Key: `images/albums/${album.title
+      Key: `images/${loggedInUserEmail}/albums/${album.title
         .toLowerCase()
         .replace(/[^A-Z0-9]+/gi, '-')}/${uuidv4()}`,
       Expires: 60 * 15,

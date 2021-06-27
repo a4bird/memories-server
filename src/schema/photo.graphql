@@ -3,6 +3,11 @@ Photo
 """
 type Photo {
   """
+  File id
+  """
+  id: String!
+
+  """
   File name
   """
   filename: String!

@@ -2,6 +2,7 @@ import { MyContext } from 'src/types/context';
 import { AlbumOutput } from 'src/types/graphql';
 
 export type Photo = {
+  id: string;
   filename: string;
   url: string;
   createdAt: Date;

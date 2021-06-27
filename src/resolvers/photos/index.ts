@@ -1,4 +1,5 @@
 import {
+  AttributeValue,
   DynamoDBClient,
   QueryCommand,
   QueryCommandInput,
@@ -62,7 +63,7 @@ export class Photos implements IPhotos {
 
     let photos: Photo[] = [];
 
-    let currentEvaluatedKey = null;
+    let currentEvaluatedKey: { [key: string]: AttributeValue } | undefined;
     do {
       const data = await this.ddbClient.send(new QueryCommand(params));
       currentEvaluatedKey = data.LastEvaluatedKey;
@@ -73,11 +74,13 @@ export class Photos implements IPhotos {
           uploadDate: new Date(item.UploadDate.S!),
         };
 
-        return returnValue;
+        const [filename, id] = returnValue.filename.split('#');
+        return { ...returnValue, filename: filename, id: id };
       }).map(
         async (photoModel): Promise<Photo> => {
           const signedUrl = await this.getPreSignedUrl(photoModel.objectKey);
           return {
+            id: photoModel.id,
             filename: photoModel.filename,
             url: signedUrl,
             createdAt: photoModel.uploadDate,

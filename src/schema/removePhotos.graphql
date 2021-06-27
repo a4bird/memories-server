@@ -1,0 +1,12 @@
+type RemovePhotosOutput {
+  errors: [Error!]
+}
+
+input RemovePhoto {
+  id: String!
+  filename: String!
+}
+
+type Mutation {
+  removePhotos(albumName: String!, photos: [RemovePhoto!]): RemovePhotosOutput!
+}

@@ -48,6 +48,7 @@ export type Mutation = {
   logout?: Maybe<Scalars['Void']>;
   photoPutPreSignedUrl: S3PutPreSignedUrlResponse;
   register?: Maybe<RegisterOutput>;
+  removePhotos: RemovePhotosOutput;
   saveProfile?: Maybe<UserProfileOutput>;
 };
 
@@ -85,6 +86,12 @@ export type MutationPhotoPutPreSignedUrlArgs = {
 export type MutationRegisterArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationRemovePhotosArgs = {
+  albumName: Scalars['String'];
+  photos?: Maybe<Array<RemovePhoto>>;
 };
 
 
@@ -153,12 +160,24 @@ export type UploadedFileResponse = {
 /** Photo */
 export type Photo = {
   __typename?: 'Photo';
+  /** File id */
+  id: Scalars['String'];
   /** File name */
   filename: Scalars['String'];
   /** Created at */
   createdAt: Scalars['DateTime'];
   /** Url */
   url: Scalars['String'];
+};
+
+export type RemovePhotosOutput = {
+  __typename?: 'RemovePhotosOutput';
+  errors?: Maybe<Array<Error>>;
+};
+
+export type RemovePhoto = {
+  id: Scalars['String'];
+  filename: Scalars['String'];
 };
 
 
@@ -307,6 +326,8 @@ export type ResolversTypes = {
   Gender: Gender;
   UploadedFileResponse: ResolverTypeWrapper<UploadedFileResponse>;
   Photo: ResolverTypeWrapper<Photo>;
+  RemovePhotosOutput: ResolverTypeWrapper<RemovePhotosOutput>;
+  RemovePhoto: RemovePhoto;
   Void: ResolverTypeWrapper<Scalars['Void']>;
   Error: ResolverTypeWrapper<Error>;
   UserAccount: ResolverTypeWrapper<UserAccount>;
@@ -336,6 +357,8 @@ export type ResolversParentTypes = {
   S3GetPreSignedUrlResponse: S3GetPreSignedUrlResponse;
   UploadedFileResponse: UploadedFileResponse;
   Photo: Photo;
+  RemovePhotosOutput: RemovePhotosOutput;
+  RemovePhoto: RemovePhoto;
   Void: Scalars['Void'];
   Error: Error;
   UserAccount: UserAccount;
@@ -382,6 +405,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   logout?: Resolver<Maybe<ResolversTypes['Void']>, ParentType, ContextType>;
   photoPutPreSignedUrl?: Resolver<ResolversTypes['S3PutPreSignedUrlResponse'], ParentType, ContextType, RequireFields<MutationPhotoPutPreSignedUrlArgs, 'albumId' | 'filename' | 'filetype'>>;
   register?: Resolver<Maybe<ResolversTypes['RegisterOutput']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'email' | 'password'>>;
+  removePhotos?: Resolver<ResolversTypes['RemovePhotosOutput'], ParentType, ContextType, RequireFields<MutationRemovePhotosArgs, 'albumName'>>;
   saveProfile?: Resolver<Maybe<ResolversTypes['UserProfileOutput']>, ParentType, ContextType, RequireFields<MutationSaveProfileArgs, 'firstName' | 'lastName' | 'gender'>>;
 };
 
@@ -427,9 +451,15 @@ export type UploadedFileResponseResolvers<ContextType = any, ParentType extends 
 };
 
 export type PhotoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Photo'] = ResolversParentTypes['Photo']> = {
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   filename?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RemovePhotosOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['RemovePhotosOutput'] = ResolversParentTypes['RemovePhotosOutput']> = {
+  errors?: Resolver<Maybe<Array<ResolversTypes['Error']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -496,6 +526,7 @@ export type Resolvers<ContextType = any> = {
   S3GetPreSignedUrlResponse?: S3GetPreSignedUrlResponseResolvers<ContextType>;
   UploadedFileResponse?: UploadedFileResponseResolvers<ContextType>;
   Photo?: PhotoResolvers<ContextType>;
+  RemovePhotosOutput?: RemovePhotosOutputResolvers<ContextType>;
   Void?: GraphQLScalarType;
   Error?: ErrorResolvers<ContextType>;
   UserAccount?: UserAccountResolvers<ContextType>;
