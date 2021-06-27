@@ -53,8 +53,12 @@ export class Photos implements IPhotos {
 
     const params: QueryCommandInput = {
       KeyConditionExpression: 'PK = :pk',
+      FilterExpression: 'attribute_not_exists(#status)',
       ExpressionAttributeValues: {
         ':pk': { S: partitionKey },
+      },
+      ExpressionAttributeNames: {
+        '#status': 'Status',
       },
       ProjectionExpression: 'Filename, ObjectKey, UploadDate',
       TableName: this.tableName,
@@ -64,36 +68,39 @@ export class Photos implements IPhotos {
     let photos: Photo[] = [];
 
     let currentEvaluatedKey: { [key: string]: AttributeValue } | undefined;
-    do {
-      const data = await this.ddbClient.send(new QueryCommand(params));
-      currentEvaluatedKey = data.LastEvaluatedKey;
-      const photoPromises = data.Items?.map((item) => {
-        let returnValue: PhotoModel = {
-          filename: item.Filename.S!,
-          objectKey: item.ObjectKey.S!,
-          uploadDate: new Date(item.UploadDate.S!),
-        };
-
-        const [filename, id] = returnValue.filename.split('#');
-        return { ...returnValue, filename: filename, id: id };
-      }).map(
-        async (photoModel): Promise<Photo> => {
-          const signedUrl = await this.getPreSignedUrl(photoModel.objectKey);
-          return {
-            id: photoModel.id,
-            filename: photoModel.filename,
-            url: signedUrl,
-            createdAt: photoModel.uploadDate,
+    try {
+      do {
+        const data = await this.ddbClient.send(new QueryCommand(params));
+        currentEvaluatedKey = data.LastEvaluatedKey;
+        const photoPromises = data.Items?.map((item) => {
+          let returnValue: PhotoModel = {
+            filename: item.Filename.S!,
+            objectKey: item.ObjectKey.S!,
+            uploadDate: new Date(item.UploadDate.S!),
           };
-        }
-      );
 
-      if (!photoPromises) return [];
+          const [filename, id] = returnValue.filename.split('#');
+          return { ...returnValue, filename: filename, id: id };
+        }).map(
+          async (photoModel): Promise<Photo> => {
+            const signedUrl = await this.getPreSignedUrl(photoModel.objectKey);
+            return {
+              id: photoModel.id,
+              filename: photoModel.filename,
+              url: signedUrl,
+              createdAt: photoModel.uploadDate,
+            };
+          }
+        );
 
-      const fetchedPhotos = await Promise.all(photoPromises);
-      photos = [...photos, ...fetchedPhotos];
-    } while (currentEvaluatedKey && photos.length < PAGE_SIZE);
+        if (!photoPromises) return [];
 
+        const fetchedPhotos = await Promise.all(photoPromises);
+        photos = [...photos, ...fetchedPhotos];
+      } while (currentEvaluatedKey && photos.length < PAGE_SIZE);
+    } catch (e) {
+      throw new Error('Server error fetching photos');
+    }
     console.log('data retrieved for album', photos);
     return photos;
   };

@@ -6,6 +6,9 @@ import {
   PutRequest,
   QueryCommand,
   QueryCommandInput,
+  TransactWriteItem,
+  TransactWriteItemsCommand,
+  TransactWriteItemsCommandInput,
   WriteRequest,
 } from '@aws-sdk/client-dynamodb';
 
@@ -18,6 +21,7 @@ import { CloudConfig } from 'src/types/cloudConfig';
 import { PAGE_SIZE } from 'src/constants';
 import { IRemovePhotos, RequestItems } from 'src/types/removePhotos';
 import { BatchWriteRequest } from 'aws-sdk/clients/clouddirectory';
+import { TransactWriteItemsInput } from 'aws-sdk/clients/dynamodb';
 
 type PhotoModel = {
   filename: string;
@@ -57,44 +61,38 @@ export class RemovePhotos implements IRemovePhotos {
     }
 
     const partitionKey = `${albumName}+${loggedInUserEmail}`;
-
-    let batchWriteParams: BatchWriteItemCommandInput = {
-      RequestItems: {
-        [`${this.tableName}`]: photos.map(
-          (photo): WriteRequest => {
-            return {
-              PutRequest: {
-                Item: {
-                  PK: {
-                    S: partitionKey,
-                  },
-                  Filename: {
-                    S: `${photo.filename}#${photo.id}`,
-                  },
-                  Status: {
-                    S: 'Delete',
-                  },
-                },
+    const transactWriteItemsParams: TransactWriteItemsCommandInput = {
+      TransactItems: photos.map((photo) => {
+        const trasactWriteItem: TransactWriteItem = {
+          Update: {
+            TableName: `${this.tableName}`,
+            Key: {
+              PK: {
+                S: partitionKey,
               },
-            };
-          }
-        ),
-      },
-      ReturnConsumedCapacity: 'TOTAL',
+              Filename: {
+                S: `${photo.filename}#${photo.id}`,
+              },
+            },
+            UpdateExpression: 'set #status = :status',
+            ExpressionAttributeNames: {
+              '#status': 'Status',
+            },
+            ExpressionAttributeValues: {
+              ':status': {
+                S: 'Delete',
+              },
+            },
+          },
+        };
+        return trasactWriteItem;
+      }),
     };
 
     try {
-      let unProcessedItems: RequestItems = {};
-      do {
-        const data = await this.ddbClient.send(
-          new BatchWriteItemCommand(batchWriteParams)
-        );
-        unProcessedItems = data.UnprocessedItems;
-
-        batchWriteParams = {
-          RequestItems: unProcessedItems,
-        };
-      } while (unProcessedItems && unProcessedItems.RequestItems.length);
+      await this.ddbClient.send(
+        new TransactWriteItemsCommand(transactWriteItemsParams)
+      );
     } catch (e) {
       throw new Error('Server error when calling operation to remove photos');
     }
