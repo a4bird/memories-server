@@ -3,6 +3,7 @@ npm run cdk deploy memory-server-dev-master -- --verbose --require-approval neve
 export    AWS_PROFILE=serverless-admin-role
 
 export    NODE_ENV=development
+export    ENV_SUFFIX=dev
 export    SLUG=master
 export    AWS_TAG_REPOSITORY=a4bird/memories-server
 
