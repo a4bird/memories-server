@@ -2,14 +2,14 @@ module.exports = [
   {
     name: 'docker',
     type: 'mysql',
-    host: 'localhost',
-    port: 3303,
+    host: process.env.DB_HOST,
+    port: 3306,
     username: 'root',
     password: 'Password1',
     database: process.env.DB_NAME || 'MemoriesDB',
     synchronize: true,
     logging: true,
-    entities: ['src/entities/*.*'],
+    entities: ['app/entities/*.*'],
   },
   {
     name: 'local',

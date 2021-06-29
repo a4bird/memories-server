@@ -1,1 +1,5 @@
 https://github.com/ysku/aurora-serverless-example/blob/master/lib/bastion.ts
+
+-- Connecting via ssh tunnel 
+
+ssh -L 3306:localhost:3306 -i "memories-bastion.pem" ec2-user@ec2-54-253-168-185.ap-southeast-2.compute.amazonaws.com

@@ -14,7 +14,7 @@ services:
 
     restart: always
   graphql:
-    image: memories-server-graphql:latest
+    image: a4bird-memories-server-graphql:latest
     container_name: memories-server
     build: .
     depends_on:
@@ -23,5 +23,15 @@ services:
       NODE_ENV: docker
       JWT_SECRET: qowiueojwojfalksdjoqiwueo
       DB_HOST: db
+      APOLLO_INTROSPECTION_ENABLED: 'true'
+      APOLLO_PLAYGROUND_ENABLED: 'true'
+      APOLLO_REPORT_SCHEMA: 'true'
+      APOLLO_GRAPH_VARIANT: 'true'
+      APOLLO_GRAPH_VARIANT: 'true'
+      PORT: 4000
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DYNAMO_DB_TABLE: a4bird-memories-table-dev-main
+      CORS_ORIGIN: http://localhost:3000
     ports:
       - 4003:4000
