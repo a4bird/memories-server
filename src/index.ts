@@ -38,26 +38,29 @@ export const startServer = async () => {
     path: '/graphql',
     cors: {
       credentials: true,
-      origin: (origin, callback) => {
-        const whitelist = [`/\.a4brd\.tk$/`];
+      // Temporarily
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      // origin: (origin, callback) => {
+      //   const whitelist = [`http://localhost:${env.port}`, `/\.a4brd\.tk$/`];
 
-        if (env.origin) {
-          whitelist.push(`${env.origin}`);
-        }
-        console.log('cors env:', env);
-        console.log('cors origin:', origin);
+      //   if (env.origin) {
+      //     whitelist.push(`${env.origin}`);
+      //   }
+      //   console.log('cors env:', env);
+      //   console.log('cors origin:', origin);
 
-        if (!origin) {
-          callback(null, true);
-          return;
-        }
+      //   if (!origin) {
+      //     callback(null, true);
+      //     return;
+      //   }
 
-        if (whitelist.indexOf(origin) !== -1) {
-          callback(null, true);
-        } else {
-          callback(new Error('Not allowed by CORS'));
-        }
-      },
+      //   if (whitelist.indexOf(origin) !== -1) {
+      //     callback(null, true);
+      //   } else {
+      //     callback(new Error('Not allowed by CORS'));
+      //   }
+      // },
     },
     bodyParserConfig: {
       limit: '10mb',
