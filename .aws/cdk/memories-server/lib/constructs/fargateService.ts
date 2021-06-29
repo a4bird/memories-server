@@ -17,8 +17,8 @@ interface FargateServiceProps {
   memoryLimitMiB?: number;
   serviceName: string;
   vpc: IVpc;
-  albSg: ISecurityGroup
-  rdsSg: ISecurityGroup
+  albSg: ISecurityGroup;
+  rdsSg: ISecurityGroup;
 }
 
 const createFargateService = (
@@ -37,7 +37,7 @@ const createFargateService = (
     serviceName,
     vpc,
     albSg,
-    rdsSg
+    rdsSg,
   }: FargateServiceProps
 ): ecs.FargateService => {
   const cluster = existingClusterName
@@ -61,29 +61,28 @@ const createFargateService = (
     }
   );
 
-  const container = taskDefinition.addContainer('web', {
+  const container = taskDefinition.addContainer('graphql', {
     image,
     environment,
     logging: new ecs.AwsLogDriver({
       streamPrefix: serviceName,
-      logRetention: logs.RetentionDays.ONE_WEEK
+      logRetention: logs.RetentionDays.ONE_WEEK,
     }),
   });
 
   const serviceSg = new SecurityGroup(scope, `svc-security-group`, {
     vpc: vpc,
     allowAllOutbound: true,
-    description: 'Cluster service Security Group'
+    description: 'Cluster service Security Group',
   });
 
-  serviceSg.addIngressRule(albSg, Port.tcp(containerPort), `${containerPort} port from anywhere`);
-
-  rdsSg.addIngressRule(
-    serviceSg,
-    Port.tcp(3306),
-    "Fargate service Sg"
+  serviceSg.addIngressRule(
+    albSg,
+    Port.tcp(containerPort),
+    `${containerPort} port from anywhere`
   );
 
+  rdsSg.addIngressRule(serviceSg, Port.tcp(3306), 'Fargate service Sg');
 
   container.addPortMappings({
     containerPort,
@@ -93,8 +92,8 @@ const createFargateService = (
     taskDefinition,
     cluster,
     desiredCount,
-    serviceName,    
-    securityGroups: [serviceSg]
+    serviceName,
+    securityGroups: [serviceSg],
   });
 
   if (alarmAction) {
@@ -204,7 +203,7 @@ const setupAlarms = (
     ecsMemoryTooHighAlarm,
     ecsNoRunningTasksAlarm,
     ecsMaxRunningTasksAlarm,
-  ].forEach(alarm => {
+  ].forEach((alarm) => {
     alarm.addAlarmAction(alarmAction);
     alarm.addOkAction(alarmAction);
   });

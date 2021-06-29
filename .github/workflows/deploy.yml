@@ -136,7 +136,9 @@ jobs:
           AWS_ROUTE53_DOMAIN: a4brd.tk
           AWS_ROUTE53_SUBDOMAIN: memories-server-${{ needs.setup.outputs.slug }}
           DOCKER_IMAGE_TAG: ${{ github.event.deployment.payload.docker_tag }}
+          CONTAINER_AWS_DYANMO_DB_TABLE: a4bird-memories-table-${{ env.ENV_SUFFIX }}-main
           CONTAINER_JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          CONTAINER_CORS_ORIGIN: http://localhost:3000
           CONTAINER_APOLLO_INTROSPECTION_ENABLED: ${{ env.ENV_SUFFIX != 'prod' }}
           CONTAINER_APOLLO_PLAYGROUND_ENABLED: ${{ env.ENV_SUFFIX != 'prod' }}
           CONTAINER_APOLLO_REPORT_SCHEMA: ${{ env.ENV_SUFFIX != 'prod' }}
