@@ -42,7 +42,11 @@ export const startServer = async () => {
       origin: '*',
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       // origin: (origin, callback) => {
-      //   const whitelist = [`http://localhost:${env.port}`, `/\.a4brd\.tk$/`];
+      // const whitelist = [
+      //   `http://localhost:4003`, //docker
+      //   `http://localhost:${env.port}`,
+      //   `/\.a4brd\.tk$/`,
+      // ];
 
       //   if (env.origin) {
       //     whitelist.push(`${env.origin}`);
