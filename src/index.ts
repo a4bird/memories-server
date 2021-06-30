@@ -43,10 +43,10 @@ export const startServer = async () => {
       // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       // If Cors Enabled
       origin: (origin, callback) => {
+        const hostedDomain = '.a4bird.com';
         const whitelist = [
           `http://localhost:4003`, //docker
           `http://localhost:${env.port}`, // local
-          `/\.a4bird\.com$/`,
         ];
 
         if (env.origin) {
@@ -61,7 +61,10 @@ export const startServer = async () => {
           return;
         }
 
-        if (whitelist.indexOf(origin) !== -1) {
+        if (
+          whitelist.indexOf(origin) !== -1 ||
+          origin.indexOf(hostedDomain) > 0
+        ) {
           callback(null, true);
         } else {
           callback(new Error('Not allowed by CORS'));

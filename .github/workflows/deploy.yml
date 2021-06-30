@@ -134,7 +134,7 @@ jobs:
           AWS_FARGATE_MIN_CAPACITY: 1
           AWS_FARGATE_MAX_CAPACITY: 4
           AWS_ROUTE53_DOMAIN: a4bird.com
-          AWS_ROUTE53_SUBDOMAIN: memories-server-${{ needs.setup.outputs.slug }}
+          AWS_ROUTE53_SUBDOMAIN: memories-server-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}
           DOCKER_IMAGE_TAG: ${{ github.event.deployment.payload.docker_tag }}
           CONTAINER_AWS_DYNAMO_DB_TABLE: a4bird-memories-table-${{ env.ENV_SUFFIX }}-main
           CONTAINER_JWT_SECRET: ${{ secrets.JWT_SECRET }}
