@@ -1,0 +1,8 @@
+server cdk.context.json
+
+
+https://docs.aws.amazon.com/cdk/latest/guide/context.html
+"hosted-zone:account=989464300156:domainName=a4bird.com:region=ap-southeast-2": {
+    "Id": "/hostedzone/Z015892116BVCR1MZZ1B3",
+    "Name": "a4bird.com."
+  }
