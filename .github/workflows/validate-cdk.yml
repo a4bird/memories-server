@@ -40,7 +40,7 @@ jobs:
           AWS_CERTIFICATE_ARN: arn:aws:acm:ap-southeast-2:${{ steps.login-aws.outputs.aws-account-id }}:certificate/${{ secrets.DEV_AWS_CERTIFICATE_ID }}
           AWS_ECR_REPO_ARN: arn:aws:ecr:${{ env.AWS_PRIMARY_REGION }}:${{ secrets.AWS_ACCOUNT_NUMBER }}:repository/${{ env.AWS_ECR_REPO_NAME }}
           AWS_FARGATE_DESIRED_COUNT: 1
-          AWS_ROUTE53_DOMAIN: a4brd.tk
+          AWS_ROUTE53_DOMAIN: a4bird.com
           AWS_ROUTE53_SUBDOMAIN: memories-graphql
           DOCKER_IMAGE_TAG: ${{ github.sha }}
         run: npm run cdk-synth
