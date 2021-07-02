@@ -63,53 +63,42 @@ export class Photos implements IPhotos {
 
     let photos: Photo[] = [];
 
-    // let currentEvaluatedKey: { [key: string]: AttributeValue } | undefined;
-    // try {
-    //   do {
-    //     const data = await this.ddbClient.send(new QueryCommand(params));
-    //     currentEvaluatedKey = data.LastEvaluatedKey;
-    //     const photoPromises = data.Items?.map((item) => {
-    //       let returnedModel: PhotoModel = {
-    //         filename: item.Filename.S!,
-    //         objectKey: item.ObjectKey.S!,
-    //         uploadDate: new Date(item.UploadDate.S!),
-    //       };
+    // TODO: Need to setup a gwyEndpoint to access Dynamodb from private subnet
+    let currentEvaluatedKey: { [key: string]: AttributeValue } | undefined;
+    try {
+      do {
+        const data = await this.ddbClient.send(new QueryCommand(params));
+        currentEvaluatedKey = data.LastEvaluatedKey;
+        const photoPromises = data.Items?.map((item) => {
+          let returnedModel: PhotoModel = {
+            filename: item.Filename.S!,
+            objectKey: item.ObjectKey.S!,
+            uploadDate: new Date(item.UploadDate.S!),
+          };
 
-    //       const [filename, id] = returnedModel.filename.split('#');
-    //       return { ...returnedModel, filename: filename, id: id };
-    //     }).map(
-    //       async (photoModel): Promise<Photo> => {
-    //         // const signedUrl = await this.getPreSignedUrl(photoModel.objectKey);
-    //         return {
-    //           id: photoModel.id,
-    //           filename: photoModel.filename,
-    //           url: photoModel.objectKey,
-    //           createdAt: photoModel.uploadDate,
-    //         };
-    //       }
-    //     );
+          const [filename, id] = returnedModel.filename.split('#');
+          return { ...returnedModel, filename: filename, id: id };
+        }).map(
+          async (photoModel): Promise<Photo> => {
+            // const signedUrl = await this.getPreSignedUrl(photoModel.objectKey);
+            return {
+              id: photoModel.id,
+              filename: photoModel.filename,
+              url: photoModel.objectKey,
+              createdAt: photoModel.uploadDate,
+            };
+          }
+        );
 
-    //     if (!photoPromises) return [];
+        if (!photoPromises) return [];
 
-    //     const fetchedPhotos = await Promise.all(photoPromises);
-    //     photos = [...photos, ...fetchedPhotos];
-    //   } while (currentEvaluatedKey && photos.length < PAGE_SIZE);
-    // } catch (e) {
-    //   console.log('Error fetching photos', e);
-    //   throw new Error('Server error fetching photos');
-    // }
-
-    const signedUrl = await this.getPreSignedUrl(
-      'images/ab1303@gmail.com/albums/timesheet/1bbee3da-346c-4cf0-bd2b-17b7749270d1'
-    );
-    const photo = {
-      id: '1bbee3da-346c-4cf0-bd2b-17b7749270d1',
-      filename: '01-05 Mar 21.PNG',
-      url: signedUrl,
-      createdAt: new Date('2021-06-27T11:45:42.0000000+00:00'),
-    };
-
-    photos.push(photo);
+        const fetchedPhotos = await Promise.all(photoPromises);
+        photos = [...photos, ...fetchedPhotos];
+      } while (currentEvaluatedKey && photos.length < PAGE_SIZE);
+    } catch (e) {
+      console.log('Error fetching photos', e);
+      throw new Error('Server error fetching photos');
+    }
 
     console.log('data retrieved for album', photos);
     return photos;
