@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
+import * as iam from '@aws-cdk/aws-iam';
 import * as ecs from '@aws-cdk/aws-ecs';
 import { IVpc, SecurityGroup, Port, ISecurityGroup } from '@aws-cdk/aws-ec2';
 import * as logs from '@aws-cdk/aws-logs';
@@ -51,6 +52,42 @@ const createFargateService = (
         clusterName: cdk.Stack.of(scope).stackName,
       });
 
+  // the role assumed by the task and its containers
+  const taskRole = new iam.Role(scope, 'task-role', {
+    assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+    roleName: 'task-role',
+    description: 'Role that the api task definitions use to run the api code',
+  });
+
+  // TODO Restrict to specific resources
+  taskRole.addManagedPolicy(
+    iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess')
+  );
+  taskRole.attachInlinePolicy(
+    new iam.Policy(scope, 'task-policy', {
+      statements: [
+        // policies to allow access to other AWS services from within the container e.g SES (Simple Email Service)
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: ['SES:*'],
+          resources: ['*'],
+        }),
+        // Dynamo Db Policy
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'dynamodb:GetRecords',
+            'dynamodb:DescribeTable',
+            'dynamodb:BatchWriteItem',
+            'dynamodb:PutItem',
+            'dynamodb:UpdateItem',
+          ],
+          resources: ['arn:aws:dynamodb:ap-southeast-2:989464300156:table/*'],
+        }),
+      ],
+    })
+  );
+
   const taskDefinition = new ecs.FargateTaskDefinition(
     scope,
     'FargateTaskDefinition',
@@ -58,6 +95,7 @@ const createFargateService = (
       family: serviceName,
       cpu,
       memoryLimitMiB,
+      taskRole: taskRole,
     }
   );
 

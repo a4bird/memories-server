@@ -37,10 +37,10 @@ export class RemovePhotos implements IRemovePhotos {
   constructor(config: CloudConfig, tableName: string) {
     const cloudConfig = {
       region: config.region || 'ap-southeast-2',
-      credentials: {
-        accessKeyId: config.accessKeyId,
-        secretAccessKey: config.secretAccessKey,
-      },
+      // credentials: {
+      //   accessKeyId: config.accessKeyId,
+      //   secretAccessKey: config.secretAccessKey,
+      // },
     };
 
     this.ddbClient = new DynamoDBClient(cloudConfig);

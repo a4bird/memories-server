@@ -53,9 +53,6 @@ export const startServer = async () => {
           whitelist.push(`${env.origin}`);
         }
 
-        console.log('cors env:', env);
-        console.log('cors origin:', origin);
-
         if (!origin) {
           callback(null, true);
           return;

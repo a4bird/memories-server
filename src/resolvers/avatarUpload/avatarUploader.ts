@@ -18,8 +18,8 @@ export class AvatarUploader implements IAvatarUploader {
     AWS.config = new AWS.Config();
     AWS.config.update({
       region: config.region || 'ap-southeast-2',
-      accessKeyId: config.accessKeyId,
-      secretAccessKey: config.secretAccessKey,
+      // accessKeyId: config.accessKeyId,
+      // secretAccessKey: config.secretAccessKey,
     });
 
     this.s3 = new AWS.S3({

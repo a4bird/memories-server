@@ -22,8 +22,8 @@ export class PhotoUploader implements IPhotoUploader {
     AWS.config = new AWS.Config();
     AWS.config.update({
       region: config.region || 'ap-southeast-2',
-      accessKeyId: config.accessKeyId,
-      secretAccessKey: config.secretAccessKey,
+      // accessKeyId: config.accessKeyId,
+      // secretAccessKey: config.secretAccessKey,
     });
 
     this.photos = new Photos(
