@@ -1,9 +1,6 @@
 import { AvatarUploader } from 'src/resolvers/avatarUpload/avatarUploader';
 
-const s3Uploader = new AvatarUploader({
-  accessKeyId: process.env.AWS_ACCESS_KEY!,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-});
+const s3Uploader = new AvatarUploader();
 
 const resolvers = {
   Mutation: {

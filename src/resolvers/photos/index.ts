@@ -25,13 +25,9 @@ export class Photos implements IPhotos {
   private ddbClient: DynamoDBClient;
   private s3Client: S3Client;
 
-  constructor(config: CloudConfig, tableName: string) {
+  constructor(tableName: string) {
     const cloudConfig = {
-      region: config.region || 'ap-southeast-2',
-      // credentials: {
-      //   accessKeyId: config.accessKeyId,
-      //   secretAccessKey: config.secretAccessKey,
-      // },
+      region: 'ap-southeast-2',
     };
 
     this.ddbClient = new DynamoDBClient(cloudConfig);
@@ -83,11 +79,11 @@ export class Photos implements IPhotos {
           return { ...returnValue, filename: filename, id: id };
         }).map(
           async (photoModel): Promise<Photo> => {
-            const signedUrl = await this.getPreSignedUrl(photoModel.objectKey);
+            // const signedUrl = await this.getPreSignedUrl(photoModel.objectKey);
             return {
               id: photoModel.id,
               filename: photoModel.filename,
-              url: signedUrl,
+              url: photoModel.objectKey,
               createdAt: photoModel.uploadDate,
             };
           }
@@ -99,6 +95,7 @@ export class Photos implements IPhotos {
         photos = [...photos, ...fetchedPhotos];
       } while (currentEvaluatedKey && photos.length < PAGE_SIZE);
     } catch (e) {
+      console.log('Error fetching photos', e);
       throw new Error('Server error fetching photos');
     }
     console.log('data retrieved for album', photos);

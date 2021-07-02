@@ -9,35 +9,24 @@ import {
   MutationPhotoPutPreSignedUrlArgs,
   S3PutPreSignedUrlResponse,
 } from 'src/types/graphql';
-import { CloudConfig } from 'src/types/cloudConfig';
 import { IPhotoUploader } from 'src/types/photoUploader';
 import { Photos } from '../photos';
 
 export class PhotoUploader implements IPhotoUploader {
   private s3: AWS.S3;
-  public config: CloudConfig;
   private photos: Photos;
 
-  constructor(config: CloudConfig) {
+  constructor() {
     AWS.config = new AWS.Config();
     AWS.config.update({
-      region: config.region || 'ap-southeast-2',
-      // accessKeyId: config.accessKeyId,
-      // secretAccessKey: config.secretAccessKey,
+      region: 'ap-southeast-2',
     });
 
-    this.photos = new Photos(
-      {
-        accessKeyId: config.accessKeyId,
-        secretAccessKey: config.secretAccessKey,
-      },
-      process.env.AWS_DYNAMO_DB_TABLE!
-    );
+    this.photos = new Photos(process.env.AWS_DYNAMO_DB_TABLE!);
 
     this.s3 = new AWS.S3({
       signatureVersion: 'v4',
     });
-    this.config = config;
   }
 
   async photoPutPreSignedUrlResolver(

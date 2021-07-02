@@ -59,8 +59,8 @@ export default async (
   const authToken = jwt.sign(email, env.secret);
   res.cookie('authToken', authToken, {
     maxAge: env.expiration,
-    sameSite: true,
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'None',
+    secure: true,
   });
 
   // TODO: Alternate to redis / redis as a task in fargate

@@ -28,7 +28,7 @@ services:
       APOLLO_REPORT_SCHEMA: 'true'
       APOLLO_GRAPH_VARIANT: 'true'
       PORT: 4000
-      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DYNAMO_DB_TABLE: a4bird-memories-table-dev-main
       CORS_ORIGIN: http://localhost:3000

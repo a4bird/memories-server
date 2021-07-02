@@ -53,9 +53,9 @@ const createFargateService = (
       });
 
   // the role assumed by the task and its containers
-  const taskRole = new iam.Role(scope, 'task-role', {
+  const taskRole = new iam.Role(scope, 'memories-ecs-task-role', {
     assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
-    roleName: 'task-role',
+    roleName: 'memories-ecs-task-role',
     description: 'Role that the api task definitions use to run the api code',
   });
 

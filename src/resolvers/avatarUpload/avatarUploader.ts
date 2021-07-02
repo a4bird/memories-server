@@ -12,20 +12,16 @@ import {
 import { CloudConfig } from 'src/types/cloudConfig';
 export class AvatarUploader implements IAvatarUploader {
   private s3: AWS.S3;
-  public config: CloudConfig;
 
-  constructor(config: CloudConfig) {
+  constructor() {
     AWS.config = new AWS.Config();
     AWS.config.update({
-      region: config.region || 'ap-southeast-2',
-      // accessKeyId: config.accessKeyId,
-      // secretAccessKey: config.secretAccessKey,
+      region: 'ap-southeast-2',
     });
 
     this.s3 = new AWS.S3({
       signatureVersion: 'v4',
     });
-    this.config = config;
   }
 
   async avatarPutPreSignedUrlResolver(

@@ -34,13 +34,9 @@ export class RemovePhotos implements IRemovePhotos {
   private tableName: string;
   private ddbClient: DynamoDBClient;
 
-  constructor(config: CloudConfig, tableName: string) {
+  constructor(tableName: string) {
     const cloudConfig = {
-      region: config.region || 'ap-southeast-2',
-      // credentials: {
-      //   accessKeyId: config.accessKeyId,
-      //   secretAccessKey: config.secretAccessKey,
-      // },
+      region: 'ap-southeast-2',
     };
 
     this.ddbClient = new DynamoDBClient(cloudConfig);
