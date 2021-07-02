@@ -99,11 +99,13 @@ export class Photos implements IPhotos {
     //   throw new Error('Server error fetching photos');
     // }
 
+    const signedUrl = await this.getPreSignedUrl(
+      'images/ab1303@gmail.com/albums/timesheet/1bbee3da-346c-4cf0-bd2b-17b7749270d1'
+    );
     const photo = {
       id: '1bbee3da-346c-4cf0-bd2b-17b7749270d1',
       filename: '01-05 Mar 21.PNG',
-      url:
-        'images/ab1303@gmail.com/albums/timesheet/1bbee3da-346c-4cf0-bd2b-17b7749270d1',
+      url: signedUrl,
       createdAt: new Date('2021-06-27T11:45:42.0000000+00:00'),
     };
 
