@@ -80,11 +80,11 @@ export class Photos implements IPhotos {
           return { ...returnedModel, filename: filename, id: id };
         }).map(
           async (photoModel): Promise<Photo> => {
-            // const signedUrl = await this.getPreSignedUrl(photoModel.objectKey);
+            const signedUrl = await this.getPreSignedUrl(photoModel.objectKey);
             return {
               id: photoModel.id,
               filename: photoModel.filename,
-              url: photoModel.objectKey,
+              url: signedUrl,
               createdAt: photoModel.uploadDate,
             };
           }

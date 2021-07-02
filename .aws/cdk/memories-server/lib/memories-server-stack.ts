@@ -1,7 +1,8 @@
 import * as cdk from '@aws-cdk/core';
+import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as ecr from '@aws-cdk/aws-ecr';
-import { SecurityGroup } from '@aws-cdk/aws-ec2';
+import { SecurityGroup, SubnetType } from '@aws-cdk/aws-ec2';
 
 import { getVpc } from './constructs/vpc';
 import createFargateService from './constructs/fargateService';
@@ -104,6 +105,16 @@ export class MemoriesServerStack extends cdk.Stack {
       region: props.env.region,
       loadBalancer,
       alarmAction,
+    });
+
+    // Add VPC Endpoint for fargate to be able to query Dynamodb
+    vpc.addGatewayEndpoint('DynamoDbEndpoint', {
+      service: ec2.GatewayVpcEndpointAwsService.DYNAMODB,
+      subnets: [
+        {
+          subnetType: SubnetType.PRIVATE,
+        },
+      ],
     });
 
     new cdk.CfnOutput(this, 'URL', {
