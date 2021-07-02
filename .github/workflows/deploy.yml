@@ -138,7 +138,7 @@ jobs:
           DOCKER_IMAGE_TAG: ${{ github.event.deployment.payload.docker_tag }}
           CONTAINER_AWS_DYNAMO_DB_TABLE: a4bird-memories-table-${{ env.ENV_SUFFIX }}-main
           CONTAINER_JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          CONTAINER_CORS_ORIGIN: http://localhost:3000
+          CONTAINER_CORS_ORIGIN: https://memories-${{ env.ENV_SUFFIX }}-${{ needs.setup.outputs.slug }}.a4bird.com
           CONTAINER_APOLLO_INTROSPECTION_ENABLED: ${{ env.ENV_SUFFIX != 'prod' }}
           CONTAINER_APOLLO_PLAYGROUND_ENABLED: ${{ env.ENV_SUFFIX != 'prod' }}
           CONTAINER_APOLLO_REPORT_SCHEMA: ${{ env.ENV_SUFFIX != 'prod' }}
