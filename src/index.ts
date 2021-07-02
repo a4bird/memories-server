@@ -45,8 +45,8 @@ export const startServer = async () => {
       origin: (origin, callback) => {
         const hostedDomain = '.a4bird.com';
         const whitelist = [
-          `http://localhost:4003`, //docker
-          `http://localhost:${env.port}`, // local
+          `http://localhost:4003`, //docker, as request from external port 4003 hits internal port 4000
+          `http://localhost:3000`, // local React
         ];
 
         if (env.origin) {
